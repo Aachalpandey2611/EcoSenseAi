@@ -30,10 +30,14 @@ app = FastAPI(
 )
 
 # Set all CORS enabled origins
+import os
 _cors_origins = list(set(settings.cors_origins_list + [
     "http://localhost:5173",
     "http://localhost:5174",
+    "https://hack22-seven.vercel.app",
+    os.getenv("FRONTEND_URL", ""),
 ]))
+_cors_origins = [origin for origin in _cors_origins if origin]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_cors_origins,
