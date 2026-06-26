@@ -11,11 +11,16 @@ from app.api.v1.router import api_router
 from app.core.config import settings
 
 
-from app.core.database import async_session_factory
+from app.core.database import async_session_factory, engine, Base
 from app.services.carbon import seed_emission_factors
+import app.models  # Ensures all models are registered with Base
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Ensure all tables exist (fixes 500 crashes on Render for new models)
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
     # Seed default emission factors
     async with async_session_factory() as db:
         await seed_emission_factors(db)
@@ -59,3 +64,21 @@ app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
 @app.get("/health")
 async def health_check():
     return {"status": "ok", "app": settings.APP_NAME}
+
+from fastapi import Request
+from fastapi.responses import JSONResponse
+import logging
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logging.error(f"Unhandled exception: {exc}", exc_info=True)
+    origin = request.headers.get("origin")
+    headers = {}
+    if origin:
+        headers["Access-Control-Allow-Origin"] = origin
+        headers["Access-Control-Allow-Credentials"] = "true"
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal Server Error", "message": str(exc)},
+        headers=headers,
+    )
