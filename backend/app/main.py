@@ -15,15 +15,34 @@ from app.core.database import async_session_factory, engine, Base
 from app.services.carbon import seed_emission_factors
 import app.models  # Ensures all models are registered with Base
 
+from sqlalchemy import select
+from app.models.user import User
+import bcrypt
+
+async def seed_demo_admin(db):
+    result = await db.execute(select(User).where(User.email == "demo_admin@ecosense.ai"))
+    if not result.scalar_one_or_none():
+        hashed = bcrypt.hashpw("Admin@123".encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+        demo_admin = User(
+            email="demo_admin@ecosense.ai",
+            hashed_password=hashed,
+            full_name="Demo Admin",
+            role="super_admin",
+            is_active=True,
+        )
+        db.add(demo_admin)
+        await db.commit()
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Ensure all tables exist (fixes 500 crashes on Render for new models)
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-    # Seed default emission factors
+    # Seed default emission factors and demo admin
     async with async_session_factory() as db:
         await seed_emission_factors(db)
+        await seed_demo_admin(db)
     yield
     # Shutdown logic
 

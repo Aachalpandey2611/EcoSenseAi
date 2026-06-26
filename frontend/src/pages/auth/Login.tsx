@@ -82,6 +82,27 @@ const Login = () => {
     }
   };
 
+  const handleDemoAdminLogin = async () => {
+    const adminEmail = 'demo_admin@ecosense.ai';
+    const adminPassword = 'Admin@123';
+    setEmail(adminEmail);
+    setPassword(adminPassword);
+    setError('');
+    setIsLoading(true);
+    try {
+      const tokens = await authApi.login({ email: adminEmail, password: adminPassword });
+      useAuthStore.getState().setTokens(tokens);
+      const user = await authApi.getMe();
+      loginAction(tokens, user);
+      navigate('/admin');
+    } catch (err: any) {
+      const detail = err.response?.data?.detail;
+      setError(typeof detail === 'string' ? detail : 'Admin demo login failed. Is the backend updated?');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const tabs = [
     { id: 'demo' as Tab, label: 'Demo Login', icon: <Zap className="w-4 h-4" /> },
     { id: 'admin' as Tab, label: 'Admin Login', icon: <Shield className="w-4 h-4" /> },
@@ -269,6 +290,23 @@ const Login = () => {
                     </>
                   )}
                 </button>
+
+                <div className="relative flex items-center gap-3 mt-4">
+                  <div className="flex-1 h-px bg-slate-700" />
+                  <span className="text-xs text-slate-500">or</span>
+                  <div className="flex-1 h-px bg-slate-700" />
+                </div>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="w-full border-purple-500/40 hover:bg-purple-500/10 text-purple-400"
+                  onClick={handleDemoAdminLogin}
+                  disabled={isLoading}
+                  isLoading={isLoading}
+                >
+                  <Zap className="w-4 h-4 mr-2" />
+                  Quick Demo Admin Login
+                </Button>
               </form>
 
               <p className="mt-6 text-center text-xs text-slate-500">
