@@ -44,28 +44,42 @@ export default function Earth() {
     <group>
       {theme === 'dark' ? (
         <>
-          {/* Cyber Eco Dark Earth */}
+          {/* Holographic Wireframe Earth */}
           <Sphere ref={earthRef} args={[2, 64, 64]}>
             <meshStandardMaterial
-              color="#060D16"
+              color="#00FF9D"
               emissive="#00FF9D"
-              emissiveIntensity={0.2}
-              emissiveMap={textureData}
+              emissiveIntensity={0.6}
               wireframe={true}
+              transparent={true}
+              opacity={0.3}
             />
           </Sphere>
-          <Sphere ref={atmosphereRef} args={[2.1, 64, 64]}>
+          
+          {/* Solid core to give depth */}
+          <Sphere args={[1.9, 64, 64]}>
+            <meshStandardMaterial
+              color="#030b14"
+              emissive="#06182c"
+              emissiveIntensity={0.8}
+            />
+          </Sphere>
+
+          {/* Distorted glowing atmosphere */}
+          <Sphere ref={atmosphereRef} args={[2.2, 64, 64]}>
             <MeshDistortMaterial
               color="#00CFFF"
+              emissive="#00CFFF"
+              emissiveIntensity={0.3}
               transparent
-              opacity={0.1}
-              distort={0.4}
-              speed={2}
-              roughness={0}
+              opacity={0.2}
+              distort={0.3}
+              speed={1.5}
+              roughness={0.2}
             />
           </Sphere>
-          <pointLight color="#00FF9D" intensity={2} distance={10} position={[0, 3, 3]} />
-          <ambientLight color="#001833" intensity={0.5} />
+          <pointLight color="#00FF9D" intensity={50} distance={20} position={[2, 3, 4]} />
+          <ambientLight color="#00CFFF" intensity={1} />
         </>
       ) : (
         <>
@@ -81,7 +95,6 @@ export default function Earth() {
             />
           </Sphere>
           
-          {/* Solid inner core so the wireframe doesn't look completely hollow/messy */}
           <Sphere args={[1.95, 32, 32]}>
              <meshBasicMaterial color="#ffffff" transparent opacity={0.6} />
           </Sphere>
