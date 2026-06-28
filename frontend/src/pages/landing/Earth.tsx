@@ -1,4 +1,4 @@
-import { useRef, useMemo } from 'react';
+import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Sphere, MeshDistortMaterial } from '@react-three/drei';
 import * as THREE from 'three';
@@ -8,23 +8,6 @@ export default function Earth() {
   const earthRef = useRef<THREE.Mesh>(null);
   const atmosphereRef = useRef<THREE.Mesh>(null);
   const theme = useSettingsStore((state) => state.theme);
-
-  // Generate a procedural noise texture for continents/clouds (since we don't have images)
-  const textureData = useMemo(() => {
-    const size = 256;
-    const data = new Uint8Array(size * size * 4);
-    for (let i = 0; i < size * size * 4; i += 4) {
-      // Very basic noise to simulate continents
-      const val = Math.random() > 0.6 ? 255 : 0;
-      data[i] = val;
-      data[i + 1] = val;
-      data[i + 2] = val;
-      data[i + 3] = 255;
-    }
-    const tex = new THREE.DataTexture(data, size, size, THREE.RGBAFormat);
-    tex.needsUpdate = true;
-    return tex;
-  }, []);
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
