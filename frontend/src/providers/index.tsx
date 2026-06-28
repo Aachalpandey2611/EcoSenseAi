@@ -1,8 +1,11 @@
 import React, { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { useAuthStore } from '../store/authStore';
 import { authApi } from '../api/auth';
 import { Loader2 } from 'lucide-react';
+
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,8 +27,6 @@ export const AppProviders = ({ children }: { children: React.ReactNode }) => {
           const user = await authApi.getMe();
           setUser(user);
         } catch (error) {
-          // If token refresh fails, the interceptor will call logout()
-          // But just in case, if getMe fails and we still think we're auth'd:
           console.error("Auth check failed", error);
         }
       }
@@ -44,8 +45,10 @@ export const AppProviders = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <QueryClientProvider client={queryClient}>
+        {children}
+      </QueryClientProvider>
+    </GoogleOAuthProvider>
   );
 };
