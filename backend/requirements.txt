@@ -121,6 +121,7 @@ rich==15.0.0
 rich-toolkit==0.20.1
 rpds-py==2026.5.1
 rsa==4.9.1
+razorpay
 scikit-image==0.26.0
 scikit-learn
 scipy==1.17.1
