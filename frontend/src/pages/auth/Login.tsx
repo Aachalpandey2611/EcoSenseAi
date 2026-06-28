@@ -242,7 +242,7 @@ const Login = () => {
                     theme={theme === 'dark' ? 'filled_black' : 'outline'}
                     text="signin_with"
                     shape="rectangular"
-                    width="100%"
+                    width="400"
                   />
                 </div>
 

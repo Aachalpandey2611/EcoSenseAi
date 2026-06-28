@@ -185,7 +185,7 @@ const Signup = () => {
               theme={theme === 'dark' ? 'filled_black' : 'outline'}
               text="signup_with"
               shape="rectangular"
-              width="100%"
+              width="400"
             />
           </div>
         </form>
