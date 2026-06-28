@@ -136,15 +136,16 @@ export const useTwinStore = create<TwinState>((set, get) => ({
 
       if (data.status === 'success' && data.predictions.length > 0) {
         const finalPrediction = data.predictions[data.predictions.length - 1];
-        const newScore = Math.max(0, Math.min(100, finalPrediction.predicted_eco_score / 10));
+        // Normalize the 0-2000 score into a 0-100 percentage
+        const normalizedScore = Math.max(0, Math.min(100, finalPrediction.predicted_eco_score / 20));
 
         get().setTarget({
-          ecoScore: newScore,
+          ecoScore: finalPrediction.predicted_eco_score,
           carbonEmissions: Math.max(0, Math.min(100, finalPrediction.predicted_emissions)),
-          airQuality: newScore,
-          treeCoverage: newScore,
-          trafficDensity: 100 - newScore * 0.5,
-          renewableUsage: newScore * 0.8,
+          airQuality: normalizedScore,
+          treeCoverage: normalizedScore,
+          trafficDensity: Math.max(0, Math.min(100, 100 - (normalizedScore * 0.8))),
+          renewableUsage: Math.max(0, Math.min(100, normalizedScore * 0.8)),
         });
 
         set({ confidenceScore: finalPrediction.confidence_score });
