@@ -71,6 +71,6 @@ export const adminApi = {
 
   deleteEvent: (id: string) => apiClient.delete(`/admin/events/${id}`),
 
-  exportUsersCSV: () => `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8001/api/v1'}/admin/reports/users/export`,
-  exportActivitiesCSV: () => `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8001/api/v1'}/admin/reports/activities/export`,
+  exportUsersCSV: () => `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8005/api/v1'}/admin/reports/users/export`,
+  exportActivitiesCSV: () => `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8005/api/v1'}/admin/reports/activities/export`,
 };

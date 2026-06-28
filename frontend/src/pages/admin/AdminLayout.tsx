@@ -42,14 +42,14 @@ export default function AdminLayout() {
       <aside className={`fixed inset-y-0 left-0 z-40 w-60 bg-[#0a0e1a]/95 backdrop-blur-xl border-r border-white/5 flex flex-col transform transition-transform duration-200 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:static md:flex`}>
         {/* Logo */}
         <div className="h-16 flex items-center px-5 border-b border-white/5 gap-3">
-          <div className="w-7 h-7 rounded-lg bg-brand-500 flex items-center justify-center shrink-0">
-            <Shield className="w-4 h-4 text-white" />
+          <div className="w-7 h-7 rounded-lg bg-[var(--primary)] flex items-center justify-center shrink-0">
+            <Shield className="w-4 h-4 text-[var(--foreground)]" />
           </div>
           <div>
-            <p className="text-sm font-bold text-white leading-none">Admin Panel</p>
-            <p className="text-[10px] text-slate-500 mt-0.5">EcoSense AI</p>
+            <p className="text-sm font-bold text-[var(--foreground)] leading-none">Admin Panel</p>
+            <p className="text-[10px] text-[var(--foreground)]0 mt-0.5">EcoSense AI</p>
           </div>
-          <button className="ml-auto md:hidden text-slate-400" onClick={() => setSidebarOpen(false)}>
+          <button className="ml-auto md:hidden text-[var(--muted-foreground)]" onClick={() => setSidebarOpen(false)}>
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -65,8 +65,8 @@ export default function AdminLayout() {
                 onClick={() => setSidebarOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all group ${
                   active
-                    ? 'bg-brand-500/15 text-brand-400 border border-brand-500/20'
-                    : 'text-slate-400 hover:text-white hover:bg-white/5'
+                    ? 'bg-[var(--primary)]/15 text-[var(--primary)] border border-[var(--primary)]/20'
+                    : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-white/5'
                 }`}
               >
                 <Icon className="w-4 h-4 shrink-0" />
@@ -80,22 +80,22 @@ export default function AdminLayout() {
         {/* User + Logout */}
         <div className="p-3 border-t border-white/5 space-y-2">
           <div className="px-3 py-2 rounded-lg bg-white/5 border border-white/5">
-            <p className="text-xs font-semibold text-white truncate">{user?.full_name}</p>
-            <p className="text-[10px] text-slate-500 truncate">{user?.email}</p>
-            <span className="inline-flex mt-1 px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-400 text-[10px] font-bold uppercase tracking-wider">
+            <p className="text-xs font-semibold text-[var(--foreground)] truncate">{user?.full_name}</p>
+            <p className="text-[10px] text-[var(--foreground)]0 truncate">{user?.email}</p>
+            <span className="inline-flex mt-1 px-2 py-0.5 rounded-full bg-[var(--primary)]/20 text-[var(--primary)] text-[10px] font-bold uppercase tracking-wider">
               {user?.role}
             </span>
           </div>
           <Link
             to="/dashboard"
-            className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-white/5 transition-all"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-white/5 transition-all"
           >
             <LayoutDashboard className="w-4 h-4" />
             Back to App
           </Link>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-[var(--muted-foreground)] hover:text-red-400 hover:bg-red-500/10 transition-all"
           >
             <LogOut className="w-4 h-4" />
             Sign Out
@@ -112,13 +112,13 @@ export default function AdminLayout() {
       <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
         {/* Top bar */}
         <header className="h-16 border-b border-white/5 bg-[#0a0e1a]/80 backdrop-blur-md flex items-center px-6 gap-4 shrink-0">
-          <button className="md:hidden text-slate-400 hover:text-white" onClick={() => setSidebarOpen(true)}>
+          <button className="md:hidden text-[var(--muted-foreground)] hover:text-[var(--foreground)]" onClick={() => setSidebarOpen(true)}>
             <Menu className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-2 text-sm">
-            <span className="text-slate-500">Admin</span>
+            <span className="text-[var(--foreground)]0">Admin</span>
             <ChevronRight className="w-3 h-3 text-slate-600" />
-            <span className="text-white font-medium">{currentPage}</span>
+            <span className="text-[var(--foreground)] font-medium">{currentPage}</span>
           </div>
           <div className="ml-auto flex items-center gap-3">
             <span className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium">

@@ -17,6 +17,7 @@ import LandingPage from '../pages/landing/LandingPage';
 import DigitalTwin from '../pages/dashboard/DigitalTwin';
 import Profile from '../pages/dashboard/Profile';
 import Settings from '../pages/dashboard/Settings';
+import Pricing from '../pages/subscription/Pricing';
 
 // Admin Pages
 import AdminLayout from '../pages/admin/AdminLayout';
@@ -29,12 +30,16 @@ import AdminEmissionFactors from '../pages/admin/AdminEmissionFactors';
 
 export const router = createBrowserRouter([
   {
+    path: '/',
+    element: <LandingPage />,
+  },
+  {
+    path: '/home',
+    element: <LandingPage />,
+  },
+  {
     element: <PublicRoute />,
     children: [
-      {
-        path: '/',
-        element: <LandingPage />,
-      },
       {
         path: '/auth',
         element: <AuthLayout />,
@@ -70,6 +75,10 @@ export const router = createBrowserRouter([
           { path: 'settings', element: <Settings /> },
         ],
       },
+      {
+        path: '/pricing',
+        element: <Pricing />,
+      },
     ],
   },
   {
@@ -89,4 +98,8 @@ export const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: '*',
+    element: <LandingPage /> // Or a custom 404 component, but this prevents the crash screen
+  }
 ]);

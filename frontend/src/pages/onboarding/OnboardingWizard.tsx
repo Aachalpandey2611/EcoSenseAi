@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Canvas } from '@react-three/fiber';
+import Earth from '@/pages/landing/Earth';
+import { motion } from 'framer-motion';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -8,225 +10,241 @@ import { authApi } from '@/api/auth';
 import { useAuthStore } from '@/store/authStore';
 import { Button } from '@/components/ui/Button';
 import { GlassPanel } from '@/components/ui/Card';
-import { CheckCircle2, ChevronRight, Sparkles } from 'lucide-react';
+import { AlertCircle, ChevronRight, MapPin, Users, Home, Car } from 'lucide-react';
+import { Input } from '@/components/ui/Input';
 
 const onboardingSchema = z.object({
-  household_size: z.string().min(1, "Please select an option"),
-  location: z.string().min(1, "Please select an option"),
-  vehicle_type: z.string().min(1, "Please select an option"),
-  diet_pattern: z.string().min(1, "Please select an option"),
-  electricity_usage: z.string().min(1, "Please select an option"),
+  location: z.string().min(1, "Location is required"),
+  household_size: z.string().min(1, "Please select household size"),
+  home_type: z.string().min(1, "Please select home type"),
+  vehicle_type: z.string().min(1, "Please select vehicle type"),
 });
 
 type OnboardingFormValues = z.infer<typeof onboardingSchema>;
 
-const STEPS = [
-  { id: 'household', title: 'Household Size', field: 'household_size' },
-  { id: 'location', title: 'Location', field: 'location' },
-  { id: 'vehicle', title: 'Vehicle Ownership', field: 'vehicle_type' },
-  { id: 'diet', title: 'Diet Pattern', field: 'diet_pattern' },
-  { id: 'electricity', title: 'Electricity Habits', field: 'electricity_usage' },
-  { id: 'generating', title: 'Generating Score', field: 'generating' },
-];
-
 const OPTIONS = {
   household_size: ['1', '2', '3', '4', '5+'],
-  location: ['North America', 'Europe', 'Asia', 'South America', 'Africa', 'Oceania'],
+  home_type: ['Apartment', 'House', 'Tiny Home'],
   vehicle_type: ['No Vehicle (Public Transit/Bike)', 'EV', 'Hybrid', 'Gas (Efficient)', 'Gas (Heavy/SUV)'],
-  diet_pattern: ['Vegan', 'Vegetarian', 'Omnivore', 'Heavy Meat'],
-  electricity_usage: ['Low', 'Average', 'High', '100% Renewable'],
 };
 
 export default function OnboardingWizard() {
   const navigate = useNavigate();
-  const { user, setOnboardingDraft, clearOnboardingDraft, setUser, onboardingDraft } = useAuthStore();
-  const [currentStep, setCurrentStep] = useState(0);
+  const { setUser } = useAuthStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [score, setScore] = useState<number | null>(null);
+  const [error, setError] = useState('');
+  const [isLocating, setIsLocating] = useState(true);
 
-  // Already onboarded — go directly to dashboard (Disabled for demo purposes so it always shows)
-  // useEffect(() => {
-  //   if (user?.has_completed_onboarding) {
-  //     navigate('/dashboard', { replace: true });
-  //   }
-  // }, [user, navigate]);
-
-  const { control, handleSubmit, watch, formState: { errors } } = useForm<OnboardingFormValues>({
+  const { control, handleSubmit, setValue, formState: { errors } } = useForm<OnboardingFormValues>({
     resolver: zodResolver(onboardingSchema),
     defaultValues: {
-      household_size: onboardingDraft?.household_size || '',
-      location: onboardingDraft?.location || '',
-      vehicle_type: onboardingDraft?.vehicle_type || '',
-      diet_pattern: onboardingDraft?.diet_pattern || '',
-      electricity_usage: onboardingDraft?.electricity_usage || '',
+      location: '',
+      household_size: '',
+      home_type: '',
+      vehicle_type: '',
     },
   });
 
-  // Watch fields to save to draft
-  const formValues = watch();
-  
   useEffect(() => {
-    if (currentStep < 5) {
-      setOnboardingDraft(formValues);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(formValues), currentStep]);
-
-  const onNext = async () => {
-    if (currentStep < STEPS.length - 2) {
-      setCurrentStep(prev => prev + 1);
-    } else if (currentStep === STEPS.length - 2) {
-      // Last input step, proceed to generation
-      setCurrentStep(prev => prev + 1);
-      handleSubmit(onSubmit)();
-    } else if (currentStep === STEPS.length - 1) {
-      // Final step -> Dashboard
-      navigate('/dashboard');
-    }
-  };
+    // Attempt to auto-detect location
+    const fetchLocation = async () => {
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.city && data.country_name) {
+            setValue('location', `${data.city}, ${data.country_name}`);
+          }
+        }
+      } catch (err) {
+        console.log("Could not auto-detect location");
+      } finally {
+        setIsLocating(false);
+      }
+    };
+    fetchLocation();
+  }, [setValue]);
 
   const onSubmit = async (data: OnboardingFormValues) => {
     setIsSubmitting(true);
+    setError('');
     try {
-      const result = await authApi.submitOnboarding(data);
-      setScore(result.eco_score);
-      // Update user in store to reflect onboarding completed
+      // We pass the required hidden fields to satisfy the backend model
+      const result = await authApi.submitOnboarding({
+        ...data,
+        diet_pattern: "Omnivore",
+        electricity_usage: "Average"
+      });
+      
       const user = await authApi.getMe();
       setUser(user);
-      clearOnboardingDraft();
-    } catch (err) {
-      console.error("Failed to submit onboarding", err);
-      // Revert step if failed
-      setCurrentStep(prev => prev - 1);
+      
+      // Store the initial eco score in sessionStorage so dashboard can pick it up immediately
+      sessionStorage.setItem('initial_eco_score', result.eco_score.toString());
+      sessionStorage.setItem('show_score_celebration', 'true');
+      
+      navigate('/dashboard');
+    } catch (err: any) {
+      setError("Network error while saving your profile. Please check your connection and try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const currentField = STEPS[currentStep].field as keyof typeof OPTIONS;
-  const currentOptions = OPTIONS[currentField] || [];
-
   return (
-    <div className="min-h-screen bg-transparent flex flex-col items-center justify-center p-6">
-      <div className="w-full max-w-2xl relative">
-        {/* Progress Bar */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-slate-800 rounded-full overflow-hidden -mt-12">
-          <motion.div 
-            className="h-full bg-brand-500"
-            initial={{ width: 0 }}
-            animate={{ width: `${((currentStep + 1) / STEPS.length) * 100}%` }}
-            transition={{ duration: 0.5, ease: "easeInOut" }}
-          />
-        </div>
+    <div className="min-h-screen bg-[var(--background)] flex flex-col items-center justify-center p-4 relative overflow-hidden">
+      {/* 3D Earth Preview Background */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] opacity-30 pointer-events-none z-0">
+        <Suspense fallback={null}>
+          <Canvas camera={{ position: [0, 0, 8], fov: 45 }}>
+            <Earth />
+          </Canvas>
+        </Suspense>
+      </div>
 
-        <GlassPanel className="min-h-[400px] flex flex-col">
-          <AnimatePresence mode="wait">
-            {currentStep < 5 ? (
-              <motion.div
-                key={currentStep}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-                className="flex-1 flex flex-col"
+      <div className="w-full max-w-lg relative z-10">
+        <GlassPanel className="p-8 shadow-[0_8px_32px_rgba(0,0,0,0.08)] bg-[var(--card)]/90 backdrop-blur-xl border border-[var(--border)]">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="mb-8 text-center">
+              <h2 className="text-3xl font-bold text-[var(--foreground)] mb-2">Let's set up your profile</h2>
+              <p className="text-[var(--muted-foreground)] text-sm">Tell us a bit about your lifestyle to get your starting Eco Score.</p>
+            </div>
+
+            {error && (
+              <motion.div 
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                className="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/20 flex items-start gap-3"
               >
-                <div className="mb-8">
-                  <span className="text-sm font-medium text-brand-400 mb-2 block">Step {currentStep + 1} of 5</span>
-                  <h2 className="text-3xl font-bold text-white">{STEPS[currentStep].title}</h2>
-                </div>
-
-                <div className="flex-1 space-y-3">
-                  <Controller
-                    name={currentField}
-                    control={control}
-                    render={({ field }) => (
-                      <>
-                        {currentOptions.map((option) => (
-                          <div 
-                            key={option}
-                            onClick={() => {
-                              field.onChange(option);
-                              // Auto-advance after small delay for Stripe-like feel
-                              setTimeout(() => onNext(), 300);
-                            }}
-                            className={`p-4 rounded-xl border cursor-pointer transition-all ${
-                              field.value === option 
-                                ? 'bg-brand-500/20 border-brand-500 shadow-[0_0_15px_rgba(16,185,129,0.2)]' 
-                                : 'bg-slate-900/50 border-slate-700 hover:border-brand-500/50 hover:bg-slate-800/50'
-                            } flex items-center justify-between`}
-                          >
-                            <span className="text-slate-100 font-medium">{option}</span>
-                            {field.value === option && (
-                              <motion.div
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                              >
-                                <CheckCircle2 className="w-5 h-5 text-brand-500" />
-                              </motion.div>
-                            )}
-                          </div>
-                        ))}
-                      </>
-                    )}
-                  />
-                  {errors[currentField] && (
-                    <p className="text-red-400 text-sm mt-2">{errors[currentField]?.message}</p>
-                  )}
-                </div>
-
-                <div className="mt-8 flex justify-between">
-                  <Button 
-                    variant="ghost" 
-                    onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
-                    disabled={currentStep === 0}
-                  >
-                    Back
-                  </Button>
-                  <Button onClick={() => onNext()}>
-                    Continue <ChevronRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="generating"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="flex-1 flex flex-col items-center justify-center text-center py-12"
-              >
-                {isSubmitting ? (
-                  <>
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                      className="w-24 h-24 rounded-full border-b-2 border-l-2 border-brand-500 mb-8"
-                    />
-                    <h2 className="text-2xl font-bold text-white mb-2">Analyzing your profile...</h2>
-                    <p className="text-slate-400">Our AI is crunching the numbers to generate your initial Eco Score.</p>
-                  </>
-                ) : (
-                  <>
-                    <motion.div 
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ type: "spring", bounce: 0.5 }}
-                      className="w-32 h-32 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center shadow-[0_0_40px_rgba(16,185,129,0.4)] mb-8 relative"
-                    >
-                      <Sparkles className="absolute top-0 right-0 w-8 h-8 text-yellow-300 transform translate-x-1/2 -translate-y-1/2" />
-                      <span className="text-5xl font-bold text-white">{score}</span>
-                    </motion.div>
-                    <h2 className="text-3xl font-bold text-white mb-4">Your Eco Score is ready!</h2>
-                    <p className="text-slate-400 max-w-sm mb-8">
-                      Based on your lifestyle, you're starting with a score of {score}. Let's see how we can improve it together.
-                    </p>
-                    <Button size="lg" className="w-full" onClick={() => onNext()}>
-                      Go to Dashboard <ChevronRight className="w-5 h-5 ml-2" />
-                    </Button>
-                  </>
-                )}
+                <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                <p className="text-sm text-red-400">{error}</p>
               </motion.div>
             )}
-          </AnimatePresence>
+
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              
+              {/* Location */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-[var(--foreground)] flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-[var(--primary)]" /> Region / Location
+                </label>
+                <Controller
+                  name="location"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      placeholder={isLocating ? "Detecting location..." : "City, Country"}
+                      disabled={isLocating}
+                      className="min-h-[44px]"
+                    />
+                  )}
+                />
+                {errors.location && <p className="text-red-400 text-xs">{errors.location.message}</p>}
+              </div>
+
+              {/* Household Size */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-[var(--foreground)] flex items-center gap-2">
+                  <Users className="w-4 h-4 text-[var(--primary)]" /> Household Size
+                </label>
+                <Controller
+                  name="household_size"
+                  control={control}
+                  render={({ field }) => (
+                    <div className="grid grid-cols-5 gap-2">
+                      {OPTIONS.household_size.map((opt) => (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => field.onChange(opt)}
+                          className={`min-h-[44px] rounded-lg border transition-all ${
+                            field.value === opt
+                              ? 'bg-[var(--primary)]/20 border-[var(--primary)] text-brand-300 shadow-[0_0_10px_rgba(16,185,129,0.2)]'
+                              : 'bg-[var(--card)]/50 border-[var(--border)] text-[var(--foreground)] hover:border-[var(--primary)]/50 hover:bg-[var(--card)]/50'
+                          }`}
+                        >
+                          {opt}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                />
+                {errors.household_size && <p className="text-red-400 text-xs">{errors.household_size.message}</p>}
+              </div>
+
+              {/* Home Type */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-[var(--foreground)] flex items-center gap-2">
+                  <Home className="w-4 h-4 text-[var(--primary)]" /> Home Type
+                </label>
+                <Controller
+                  name="home_type"
+                  control={control}
+                  render={({ field }) => (
+                    <div className="grid grid-cols-3 gap-2">
+                      {OPTIONS.home_type.map((opt) => (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => field.onChange(opt)}
+                          className={`min-h-[44px] rounded-lg border text-sm transition-all ${
+                            field.value === opt
+                              ? 'bg-[var(--primary)]/20 border-[var(--primary)] text-brand-300 shadow-[0_0_10px_rgba(16,185,129,0.2)]'
+                              : 'bg-[var(--card)]/50 border-[var(--border)] text-[var(--foreground)] hover:border-[var(--primary)]/50 hover:bg-[var(--card)]/50'
+                          }`}
+                        >
+                          {opt}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                />
+                {errors.home_type && <p className="text-red-400 text-xs">{errors.home_type.message}</p>}
+              </div>
+
+              {/* Vehicle Type */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-[var(--foreground)] flex items-center gap-2">
+                  <Car className="w-4 h-4 text-[var(--primary)]" /> Primary Transport
+                </label>
+                <Controller
+                  name="vehicle_type"
+                  control={control}
+                  render={({ field }) => (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {OPTIONS.vehicle_type.map((opt) => (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => field.onChange(opt)}
+                          className={`min-h-[44px] p-2 rounded-lg border text-sm transition-all ${
+                            field.value === opt
+                              ? 'bg-[var(--primary)]/20 border-[var(--primary)] text-brand-300 shadow-[0_0_10px_rgba(16,185,129,0.2)]'
+                              : 'bg-[var(--card)]/50 border-[var(--border)] text-[var(--foreground)] hover:border-[var(--primary)]/50 hover:bg-[var(--card)]/50'
+                          }`}
+                        >
+                          {opt}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                />
+                {errors.vehicle_type && <p className="text-red-400 text-xs">{errors.vehicle_type.message}</p>}
+              </div>
+
+              <div className="pt-4">
+                <Button type="submit" className="w-full min-h-[48px] text-lg" isLoading={isSubmitting}>
+                  Generate Eco Score <ChevronRight className="w-5 h-5 ml-2" />
+                </Button>
+              </div>
+
+            </form>
+          </motion.div>
         </GlassPanel>
       </div>
     </div>

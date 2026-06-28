@@ -88,6 +88,90 @@ async def authenticate_user(
     )
 
 
+async def authenticate_google_user(
+    db: AsyncSession, token: str
+) -> tuple[User, TokenPair]:
+    """Verify real Google ID token and authenticate user."""
+    from google.oauth2 import id_token
+    from google.auth.transport import requests as google_requests
+    import requests as http_requests
+
+    if not settings.GOOGLE_CLIENT_ID:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Google OAuth is not configured on this server.",
+        )
+
+    try:
+        # Verify the token against Google's servers
+        request = google_requests.Request(session=http_requests.Session())
+        id_info = id_token.verify_oauth2_token(
+            token,
+            request,
+            settings.GOOGLE_CLIENT_ID,
+            clock_skew_in_seconds=10,
+        )
+    except ValueError as e:
+        logger.warning(f"Google token verification failed: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid Google token. Please try signing in again.",
+        )
+
+    # Extract verified user info from Google's payload
+    email = id_info.get("email")
+    full_name = id_info.get("name", email)
+    email_verified = id_info.get("email_verified", False)
+
+    if not email or not email_verified:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Google account email is not verified.",
+        )
+
+    # Find or create user in DB
+    stmt = select(User).where(User.email == email)
+    result = await db.execute(stmt)
+    user = result.scalar_one_or_none()
+
+    if not user:
+        import secrets
+        # Create new user with a random secure password (they'll use Google to sign in)
+        user = User(
+            email=email,
+            hashed_password=hash_password(secrets.token_urlsafe(32)),
+            full_name=full_name,
+        )
+        db.add(user)
+        await db.flush()
+        logger.info(f"New user created via Google OAuth: {email}")
+    else:
+        logger.info(f"Existing user signed in via Google OAuth: {email}")
+
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="This account has been deactivated.",
+        )
+
+    # Generate our app tokens
+    access_token = create_access_token(subject=str(user.id))
+    refresh_token_str = create_refresh_token()
+
+    refresh_token = RefreshToken(
+        token=refresh_token_str,
+        user_id=user.id,
+        expires_at=datetime.now(timezone.utc)
+        + __import__("datetime").timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS),
+    )
+    db.add(refresh_token)
+
+    return user, TokenPair(
+        access_token=access_token,
+        refresh_token=refresh_token_str,
+    )
+
+
 async def refresh_tokens(db: AsyncSession, refresh_token_str: str) -> TokenPair:
     """Issue new tokens using a valid refresh token."""
     # Find token

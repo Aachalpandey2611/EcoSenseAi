@@ -11,8 +11,8 @@ const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
 
 const ChartCard = ({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) => (
   <div className="bg-[#0d1117]/80 backdrop-blur-sm border border-white/5 rounded-2xl p-5">
-    <h3 className="text-sm font-semibold text-white">{title}</h3>
-    {subtitle && <p className="text-xs text-slate-500 mt-0.5 mb-4">{subtitle}</p>}
+    <h3 className="text-sm font-semibold text-[var(--foreground)]">{title}</h3>
+    {subtitle && <p className="text-xs text-[var(--foreground)]0 mt-0.5 mb-4">{subtitle}</p>}
     {!subtitle && <div className="mb-4" />}
     {children}
   </div>
@@ -28,11 +28,11 @@ export default function AdminAnalytics() {
 
   if (loading) return (
     <div className="flex items-center justify-center h-64">
-      <div className="w-10 h-10 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
+      <div className="w-10 h-10 border-2 border-[var(--primary)] border-t-transparent rounded-full animate-spin" />
     </div>
   );
 
-  if (!stats) return <p className="text-slate-400">Failed to load analytics.</p>;
+  if (!stats) return <p className="text-[var(--muted-foreground)]">Failed to load analytics.</p>;
 
   const tooltipStyle = {
     contentStyle: { background: '#0d1117', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, color: '#fff', fontSize: 12 }
@@ -41,22 +41,22 @@ export default function AdminAnalytics() {
   return (
     <div className="space-y-5 max-w-7xl mx-auto">
       <div>
-        <h1 className="text-2xl font-bold text-white">Analytics</h1>
-        <p className="text-slate-500 text-sm mt-1">Platform-wide performance insights</p>
+        <h1 className="text-2xl font-bold text-[var(--foreground)]">Analytics</h1>
+        <p className="text-[var(--foreground)]0 text-sm mt-1">Platform-wide performance insights</p>
       </div>
 
       {/* Summary Chips */}
       <div className="flex flex-wrap gap-3">
         {[
-          { label: 'Total Users', value: stats.total_users, icon: Users, color: 'text-brand-400' },
+          { label: 'Total Users', value: stats.total_users, icon: Users, color: 'text-[var(--primary)]' },
           { label: 'Activities Logged', value: stats.total_activities, icon: Activity, color: 'text-blue-400' },
           { label: 'CO₂ Tracked', value: `${stats.total_carbon_kg.toLocaleString()} kg`, icon: Leaf, color: 'text-emerald-400' },
           { label: 'Weekly New Users', value: stats.new_users_week, icon: TrendingUp, color: 'text-amber-400' },
         ].map(({ label, value, icon: Icon, color }) => (
           <div key={label} className="flex items-center gap-2.5 px-4 py-2.5 bg-[#0d1117]/80 border border-white/5 rounded-xl">
             <Icon className={`w-4 h-4 ${color}`} />
-            <span className="text-xs text-slate-500">{label}</span>
-            <span className="text-sm font-bold text-white ml-1">{typeof value === 'number' ? value.toLocaleString() : value}</span>
+            <span className="text-xs text-[var(--foreground)]0">{label}</span>
+            <span className="text-sm font-bold text-[var(--foreground)] ml-1">{typeof value === 'number' ? value.toLocaleString() : value}</span>
           </div>
         ))}
       </div>
@@ -98,7 +98,7 @@ export default function AdminAnalytics() {
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-48 flex items-center justify-center text-slate-500 text-sm">No data yet</div>
+            <div className="h-48 flex items-center justify-center text-[var(--foreground)]0 text-sm">No data yet</div>
           )}
         </ChartCard>
 
@@ -112,8 +112,8 @@ export default function AdminAnalytics() {
             ].map(({ label, value, color }) => (
               <div key={label}>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs text-slate-400">{label}</span>
-                  <span className="text-xs font-bold text-white">{value}%</span>
+                  <span className="text-xs text-[var(--muted-foreground)]">{label}</span>
+                  <span className="text-xs font-bold text-[var(--foreground)]">{value}%</span>
                 </div>
                 <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
                   <div

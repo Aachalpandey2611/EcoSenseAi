@@ -22,9 +22,9 @@ const KpiCard = ({ label, value, icon: Icon, color, sub }: {
     className="bg-[#0d1117]/80 backdrop-blur-sm border border-white/5 rounded-2xl p-5 flex items-start justify-between hover:border-white/10 transition-colors group"
   >
     <div>
-      <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">{label}</p>
-      <p className="text-3xl font-bold text-white">{value.toLocaleString()}</p>
-      {sub && <p className="text-xs text-slate-500 mt-1">{sub}</p>}
+      <p className="text-xs font-medium text-[var(--foreground)]0 uppercase tracking-wider mb-2">{label}</p>
+      <p className="text-3xl font-bold text-[var(--foreground)]">{value.toLocaleString()}</p>
+      {sub && <p className="text-xs text-[var(--foreground)]0 mt-1">{sub}</p>}
     </div>
     <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${color} group-hover:scale-110 transition-transform`}>
       <Icon className="w-5 h-5" />
@@ -42,23 +42,23 @@ export default function AdminDashboard() {
 
   if (loading) return (
     <div className="flex items-center justify-center h-64">
-      <div className="w-10 h-10 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
+      <div className="w-10 h-10 border-2 border-[var(--primary)] border-t-transparent rounded-full animate-spin" />
     </div>
   );
 
-  if (!stats) return <p className="text-slate-400">Failed to load admin stats.</p>;
+  if (!stats) return <p className="text-[var(--muted-foreground)]">Failed to load admin stats.</p>;
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">Platform Overview</h1>
-        <p className="text-slate-500 text-sm mt-1">Real-time EcoSense AI platform analytics</p>
+        <h1 className="text-2xl font-bold text-[var(--foreground)]">Platform Overview</h1>
+        <p className="text-[var(--foreground)]0 text-sm mt-1">Real-time EcoSense AI platform analytics</p>
       </div>
 
       {/* KPI Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <KpiCard label="Total Users" value={stats.total_users} icon={Users} color="bg-brand-500/15 text-brand-400" sub={`${stats.new_users_week} new this week`} />
+        <KpiCard label="Total Users" value={stats.total_users} icon={Users} color="bg-[var(--primary)]/15 text-[var(--primary)]" sub={`${stats.new_users_week} new this week`} />
         <KpiCard label="Active Users" value={stats.active_users} icon={Activity} color="bg-blue-500/15 text-blue-400" sub={`${Math.round((stats.active_users / stats.total_users) * 100)}% of total`} />
         <KpiCard label="Total Activities" value={stats.total_activities} icon={BarChart3} color="bg-purple-500/15 text-purple-400" />
         <KpiCard label="Carbon Tracked" value={`${stats.total_carbon_kg.toLocaleString()} kg`} icon={Leaf} color="bg-emerald-500/15 text-emerald-400" sub="CO₂ equivalent" />
@@ -68,8 +68,8 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* User Growth */}
         <div className="lg:col-span-2 bg-[#0d1117]/80 backdrop-blur-sm border border-white/5 rounded-2xl p-5">
-          <h3 className="text-sm font-semibold text-white mb-1">User Growth</h3>
-          <p className="text-xs text-slate-500 mb-4">New signups over the last 30 days</p>
+          <h3 className="text-sm font-semibold text-[var(--foreground)] mb-1">User Growth</h3>
+          <p className="text-xs text-[var(--foreground)]0 mb-4">New signups over the last 30 days</p>
           <ResponsiveContainer width="100%" height={200}>
             <AreaChart data={stats.user_growth}>
               <defs>
@@ -91,8 +91,8 @@ export default function AdminDashboard() {
 
         {/* Activities by Category */}
         <div className="bg-[#0d1117]/80 backdrop-blur-sm border border-white/5 rounded-2xl p-5">
-          <h3 className="text-sm font-semibold text-white mb-1">Activities by Category</h3>
-          <p className="text-xs text-slate-500 mb-4">Distribution</p>
+          <h3 className="text-sm font-semibold text-[var(--foreground)] mb-1">Activities by Category</h3>
+          <p className="text-xs text-[var(--foreground)]0 mb-4">Distribution</p>
           {stats.activities_by_category.length > 0 ? (
             <ResponsiveContainer width="100%" height={200}>
               <PieChart>
@@ -115,7 +115,7 @@ export default function AdminDashboard() {
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-48 flex items-center justify-center text-slate-500 text-sm">No activity data yet</div>
+            <div className="h-48 flex items-center justify-center text-[var(--foreground)]0 text-sm">No activity data yet</div>
           )}
         </div>
       </div>
@@ -126,13 +126,13 @@ export default function AdminDashboard() {
           { label: 'Admin Users', value: stats.admin_users, icon: Shield, color: 'text-amber-400' },
           { label: 'New This Week', value: stats.new_users_week, icon: TrendingUp, color: 'text-emerald-400' },
           { label: 'Activity Types', value: stats.activities_by_category.length, icon: Zap, color: 'text-blue-400' },
-          { label: 'Avg Carbon/User', value: stats.total_users ? `${(stats.total_carbon_kg / stats.total_users).toFixed(1)} kg` : '0', icon: Leaf, color: 'text-brand-400' },
+          { label: 'Avg Carbon/User', value: stats.total_users ? `${(stats.total_carbon_kg / stats.total_users).toFixed(1)} kg` : '0', icon: Leaf, color: 'text-[var(--primary)]' },
         ].map(({ label, value, icon: Icon, color }) => (
           <div key={label} className="bg-[#0d1117]/80 backdrop-blur-sm border border-white/5 rounded-xl p-4 flex items-center gap-3">
             <Icon className={`w-5 h-5 shrink-0 ${color}`} />
             <div>
-              <p className="text-xs text-slate-500">{label}</p>
-              <p className="text-base font-bold text-white">{typeof value === 'number' ? value.toLocaleString() : value}</p>
+              <p className="text-xs text-[var(--foreground)]0">{label}</p>
+              <p className="text-base font-bold text-[var(--foreground)]">{typeof value === 'number' ? value.toLocaleString() : value}</p>
             </div>
           </div>
         ))}

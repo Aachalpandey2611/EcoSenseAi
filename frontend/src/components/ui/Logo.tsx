@@ -18,7 +18,7 @@ export const Logo = ({ className }: { className?: string }) => {
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="h-6 w-6 text-white"
+          className="h-6 w-6 text-[var(--foreground)]"
         >
           <path d="M12 2v20" />
           <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
@@ -28,9 +28,9 @@ export const Logo = ({ className }: { className?: string }) => {
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.2, duration: 0.8 }}
-        className="text-xl font-bold tracking-tight text-white"
+        className="text-xl font-bold tracking-tight text-[var(--foreground)]"
       >
-        ECOSENSE<span className="text-brand-500">.AI</span>
+        ECOSENSE<span className="text-[var(--primary)]">.AI</span>
       </motion.span>
     </div>
   );

@@ -75,14 +75,14 @@ const MetricCard = ({ icon, label, value, unit, trend, change, delay = 0, color 
       ${color === 'sky'    ? 'bg-sky-500/20 text-sky-400'       : ''}
       ${color === 'violet' ? 'bg-violet-500/20 text-violet-400' : ''}
       ${color === 'rose'   ? 'bg-rose-500/20 text-rose-400'     : ''}
-      ${color === 'brand'  ? 'bg-brand-500/20 text-brand-400'   : ''}
+      ${color === 'brand'  ? 'bg-[var(--primary)]/20 text-[var(--primary)]'   : ''}
     `}>
       {icon}
     </div>
     <div className="flex-1 min-w-0">
-      <p className="text-xs text-slate-500 truncate">{label}</p>
-      <p className="text-sm font-bold text-white">
-        {value} <span className="text-xs font-normal text-slate-400">{unit}</span>
+      <p className="text-xs text-[var(--foreground)]0 truncate">{label}</p>
+      <p className="text-sm font-bold text-[var(--foreground)]">
+        {value} <span className="text-xs font-normal text-[var(--muted-foreground)]">{unit}</span>
       </p>
     </div>
     {trend && change && (
@@ -135,7 +135,7 @@ const AuthLayout = () => {
     <div className="flex min-h-screen bg-transparent">
 
       {/* ── LEFT: Environmental Dashboard Preview ─────────────────────────── */}
-      <div className="hidden lg:flex lg:w-[55%] relative overflow-hidden bg-slate-900 flex-col p-8 xl:p-12">
+      <div className="hidden lg:flex lg:w-[55%] relative overflow-hidden bg-[var(--card)] flex-col p-8 xl:p-12">
 
         {/* Animated background blobs */}
         <div className="absolute inset-0 z-0 pointer-events-none">
@@ -143,7 +143,7 @@ const AuthLayout = () => {
           <motion.div
             animate={{ scale: [1, 1.25, 1], opacity: [0.25, 0.45, 0.25] }}
             transition={{ duration: 18, repeat: Infinity }}
-            className="absolute -top-1/4 -right-1/4 w-[700px] h-[700px] rounded-full bg-brand-500/10 blur-[120px]"
+            className="absolute -top-1/4 -right-1/4 w-[700px] h-[700px] rounded-full bg-[var(--primary)]/10 blur-[120px]"
           />
           <motion.div
             animate={{ scale: [1, 1.4, 1], opacity: [0.15, 0.3, 0.15] }}
@@ -161,7 +161,7 @@ const AuthLayout = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-500/15 border border-brand-500/30"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--primary)]/15 border border-[var(--primary)]/30"
             >
               <span className="w-2 h-2 rounded-full bg-brand-400 animate-pulse" />
               <span className="text-xs text-brand-300 font-medium">Live Preview</span>
@@ -182,23 +182,23 @@ const AuthLayout = () => {
           >
             {/* Avatar */}
             <div className="relative shrink-0">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-400 to-emerald-600 flex items-center justify-center text-2xl font-bold text-white shadow-lg">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-400 to-emerald-600 flex items-center justify-center text-2xl font-bold text-[var(--foreground)] shadow-lg">
                 {d.userName.split(' ').map(n => n[0]).join('')}
               </div>
-              <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-brand-500 flex items-center justify-center">
-                <Leaf className="w-3 h-3 text-white" />
+              <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[var(--primary)] flex items-center justify-center">
+                <Leaf className="w-3 h-3 text-[var(--foreground)]" />
               </div>
             </div>
 
             <div className="flex-1 min-w-0">
-              <h2 className="text-lg font-bold text-white truncate">{d.userName}</h2>
-              <div className="flex items-center gap-1 text-xs text-slate-400 mt-0.5">
-                <MapPin className="w-3 h-3 text-brand-400" />
+              <h2 className="text-lg font-bold text-[var(--foreground)] truncate">{d.userName}</h2>
+              <div className="flex items-center gap-1 text-xs text-[var(--muted-foreground)] mt-0.5">
+                <MapPin className="w-3 h-3 text-[var(--primary)]" />
                 <span>{d.location}</span>
               </div>
               <div className="mt-2 flex items-center gap-2">
-                <span className="text-xs text-slate-500">This Month</span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30">
+                <span className="text-xs text-[var(--foreground)]0">This Month</span>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--primary)]/20 text-brand-300 border border-[var(--primary)]/30">
                   {d.totalCarbon.value} {d.totalCarbon.unit}
                 </span>
               </div>
@@ -217,7 +217,7 @@ const AuthLayout = () => {
                   >
                     {d.ecoScore}
                   </motion.span>
-                  <span className="text-[10px] text-slate-500 -mt-0.5">Eco Score</span>
+                  <span className="text-[10px] text-[var(--foreground)]0 -mt-0.5">Eco Score</span>
                 </div>
               </div>
             </div>
@@ -225,7 +225,7 @@ const AuthLayout = () => {
 
           {/* ── Environmental Metrics Grid ─── */}
           <div>
-            <p className="text-xs text-slate-500 uppercase tracking-widest mb-2 font-semibold">📊 Monthly Impact</p>
+            <p className="text-xs text-[var(--foreground)]0 uppercase tracking-widest mb-2 font-semibold">📊 Monthly Impact</p>
             <div className="grid grid-cols-2 gap-2">
               <MetricCard
                 icon={<Zap className="w-4 h-4" />}
@@ -275,14 +275,14 @@ const AuthLayout = () => {
             initial={{ opacity: 0, x: -16 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.55 }}
-            className="rounded-2xl border border-brand-500/30 bg-gradient-to-r from-brand-500/10 to-emerald-500/5 p-4"
+            className="rounded-2xl border border-[var(--primary)]/30 bg-gradient-to-r from-brand-500/10 to-emerald-500/5 p-4"
           >
             <div className="flex items-center gap-2 mb-2">
-              <Brain className="w-4 h-4 text-brand-400" />
+              <Brain className="w-4 h-4 text-[var(--primary)]" />
               <span className="text-xs font-bold text-brand-300 uppercase tracking-wider">AI Insight</span>
-              <Sparkles className="w-3 h-3 text-brand-400 ml-auto" />
+              <Sparkles className="w-3 h-3 text-[var(--primary)] ml-auto" />
             </div>
-            <p className="text-sm text-slate-300 leading-relaxed">{d.aiInsight}</p>
+            <p className="text-sm text-[var(--foreground)] leading-relaxed">{d.aiInsight}</p>
           </motion.div>
 
           {/* ── Recommended Actions ─── */}
@@ -306,7 +306,7 @@ const AuthLayout = () => {
                   className="flex items-center gap-3 p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors cursor-default"
                 >
                   <span className="text-base shrink-0">{a.icon}</span>
-                  <p className="text-xs text-slate-300 flex-1">{a.label}</p>
+                  <p className="text-xs text-[var(--foreground)] flex-1">{a.label}</p>
                   <span className="text-xs font-semibold text-emerald-400 whitespace-nowrap">{a.impact}</span>
                   <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
                 </motion.div>
@@ -326,7 +326,7 @@ const AuthLayout = () => {
                 <TrendingUp className="w-4 h-4 text-purple-400" />
                 <span className="text-xs text-purple-300 font-semibold">Predicted Score</span>
               </div>
-              <p className="text-xs text-slate-400 mb-2">If you follow recommendations</p>
+              <p className="text-xs text-[var(--muted-foreground)] mb-2">If you follow recommendations</p>
               <div className="flex items-end gap-1">
                 <span className="text-3xl font-black text-purple-300">{d.predictedScore}</span>
                 <div className="flex items-center gap-1 text-emerald-400 text-xs font-semibold mb-1">
@@ -354,12 +354,12 @@ const AuthLayout = () => {
                 <Globe className="w-4 h-4 text-cyan-400" />
                 <span className="text-xs text-cyan-300 font-semibold">Digital City</span>
               </div>
-              <p className="text-xs text-slate-400 mb-2">Your eco city status</p>
+              <p className="text-xs text-[var(--muted-foreground)] mb-2">Your eco city status</p>
               <div className="flex items-center gap-2">
                 <TreePine className="w-6 h-6 text-emerald-400" />
                 <div>
-                  <p className="text-sm font-bold text-white">{d.cityStatus}</p>
-                  <p className="text-xs text-slate-500">Level 3 city</p>
+                  <p className="text-sm font-bold text-[var(--foreground)]">{d.cityStatus}</p>
+                  <p className="text-xs text-[var(--foreground)]0">Level 3 city</p>
                 </div>
               </div>
               <div className="mt-2 flex gap-1 items-end">

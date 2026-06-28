@@ -11,9 +11,10 @@ from pydantic import BaseModel
 class OnboardingRequest(BaseModel):
     household_size: str
     location: str
+    home_type: str = "Apartment"
     vehicle_type: str
-    diet_pattern: str
-    electricity_usage: str
+    diet_pattern: str = "Omnivore"
+    electricity_usage: str = "Average"
 
 
 class EcoProfileResponse(BaseModel):
@@ -21,6 +22,7 @@ class EcoProfileResponse(BaseModel):
     user_id: uuid.UUID
     household_size: str
     location: str
+    home_type: str = "Apartment"
     vehicle_type: str
     diet_pattern: str
     electricity_usage: str

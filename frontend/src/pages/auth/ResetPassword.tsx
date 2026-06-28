@@ -63,11 +63,11 @@ const ResetPassword = () => {
         transition={{ duration: 0.5 }}
       >
         <GlassPanel className="text-center p-10">
-          <div className="w-16 h-16 bg-brand-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle2 className="w-8 h-8 text-brand-400" />
+          <div className="w-16 h-16 bg-[var(--primary)]/20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle2 className="w-8 h-8 text-[var(--primary)]" />
           </div>
-          <h2 className="text-2xl font-bold text-white mb-2">Password reset</h2>
-          <p className="text-slate-400 mb-8">
+          <h2 className="text-2xl font-bold text-[var(--foreground)] mb-2">Password reset</h2>
+          <p className="text-[var(--muted-foreground)] mb-8">
             Your password has been successfully reset. You can now log in with your new password.
           </p>
           <Link to="/auth/login">
@@ -86,8 +86,8 @@ const ResetPassword = () => {
     >
       <GlassPanel>
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-white mb-2">Set new password</h2>
-          <p className="text-slate-400">Must be at least 8 characters long.</p>
+          <h2 className="text-3xl font-bold text-[var(--foreground)] mb-2">Set new password</h2>
+          <p className="text-[var(--muted-foreground)]">Must be at least 8 characters long.</p>
         </div>
 
         {!token && (

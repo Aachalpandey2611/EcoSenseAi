@@ -45,6 +45,16 @@ async def create_activity(db: AsyncSession, user_id: uuid.UUID, data: ActivityCr
     profile = (await db.execute(stmt)).scalar_one_or_none()
     if profile:
         profile.eco_score = max(0, min(profile.eco_score + int(impact), 2000))
+        
+    # Update Gamification Profile for Leaderboard sync
+    from app.models.gamification import GamificationProfile
+    stmt_gamify = select(GamificationProfile).where(GamificationProfile.user_id == user_id)
+    g_profile = (await db.execute(stmt_gamify)).scalar_one_or_none()
+    if not g_profile:
+        g_profile = GamificationProfile(user_id=user_id, total_eco_points=0)
+        db.add(g_profile)
+    # Add absolute impact to gamification points (since gamification points always go up for logging good acts)
+    g_profile.total_eco_points += abs(int(impact))
     
     await db.commit()
     await db.refresh(activity)
@@ -106,15 +116,16 @@ async def get_dashboard_stats(db: AsyncSession, user_id: uuid.UUID) -> dict:
     waste_recycled = (await db.execute(stmt_waste)).scalar() or 0.0
     
     # Trend Data (Last 7 days mock or real)
-    # For a real app, we'd group by day. Let's fetch last 7 days of activities and group them in Python for simplicity.
-    thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
-    stmt_trend = select(Activity).where(Activity.user_id == user_id, Activity.date >= thirty_days_ago).order_by(Activity.date)
+    # For a real app, we'd group by day. Let's fetch last 30 days of activities and group them.
+    # Start 29 days ago so that the 30th day is today.
+    twenty_nine_days_ago = datetime.now(timezone.utc) - timedelta(days=29)
+    stmt_trend = select(Activity).where(Activity.user_id == user_id, Activity.date >= twenty_nine_days_ago).order_by(Activity.date)
     trend_acts = (await db.execute(stmt_trend)).scalars().all()
     
     # Group by day
     trend_dict = {}
     for i in range(30):
-        d = (thirty_days_ago + timedelta(days=i)).strftime("%b %d")
+        d = (twenty_nine_days_ago + timedelta(days=i)).strftime("%b %d")
         trend_dict[d] = {"name": d, "impact": 0}
         
     for a in trend_acts:

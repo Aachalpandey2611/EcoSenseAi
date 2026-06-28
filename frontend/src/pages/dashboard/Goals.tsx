@@ -68,7 +68,7 @@ export default function Goals() {
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition-colors font-medium"
+          className="flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-[var(--foreground)] rounded-lg transition-colors font-medium"
         >
           <Plus size={20} />
           New Goal
@@ -80,7 +80,7 @@ export default function Goals() {
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-emerald-500"></div>
         </div>
       ) : goals.length === 0 ? (
-        <div className="bg-slate-800/50 rounded-xl p-8 text-center border border-slate-700/50">
+        <div className="bg-[var(--card)]/50 rounded-xl p-8 text-center border border-[var(--border)]/50">
           <Target className="w-16 h-16 text-emerald-500/20 mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-gray-200 mb-2">No Active Goals</h3>
           <p className="text-gray-400 mb-6">Start your sustainability journey by setting your first eco-goal.</p>
@@ -94,7 +94,7 @@ export default function Goals() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {goals.map((goal) => (
-            <div key={goal.id} className="bg-slate-800 rounded-xl p-6 border border-slate-700 relative group overflow-hidden">
+            <div key={goal.id} className="bg-[var(--card)] rounded-xl p-6 border border-[var(--border)] relative group overflow-hidden">
               {goal.status === 'completed' && (
                 <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-500/20 rounded-bl-full flex items-start justify-end p-2">
                   <CheckCircle2 className="w-5 h-5 text-emerald-400" />
@@ -118,7 +118,7 @@ export default function Goals() {
                 </p>
               )}
 
-              <div className="flex items-center gap-4 text-xs font-medium mt-auto pt-4 border-t border-slate-700/50">
+              <div className="flex items-center gap-4 text-xs font-medium mt-auto pt-4 border-t border-[var(--border)]/50">
                 <div className="flex items-center gap-1 text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-md">
                   <Leaf size={14} />
                   +{goal.eco_score_reward} pts
@@ -141,7 +141,7 @@ export default function Goals() {
                   </button>
                   <button 
                     onClick={() => updateGoalStatus(goal.id, 'failed')}
-                    className="flex-1 bg-slate-700/50 hover:bg-slate-700 text-gray-300 py-2 rounded-lg text-sm font-medium transition-colors"
+                    className="flex-1 bg-[var(--border)]/50 hover:bg-[var(--border)] text-gray-300 py-2 rounded-lg text-sm font-medium transition-colors"
                   >
                     Give Up
                   </button>
@@ -160,49 +160,49 @@ export default function Goals() {
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-slate-800 rounded-2xl w-full max-w-md border border-slate-700 overflow-hidden shadow-2xl">
+          <div className="bg-[var(--card)] rounded-2xl w-full max-w-md border border-[var(--border)] overflow-hidden shadow-2xl">
             <div className="p-6">
-              <h2 className="text-xl font-bold text-gray-100 mb-6">Create New Goal</h2>
+              <h2 className="text-xl font-bold text-[var(--foreground)] mb-6">Create New Goal</h2>
               <form onSubmit={createGoal} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">Goal Title</label>
+                  <label className="block text-sm font-medium text-[var(--foreground)] mb-1">Goal Title</label>
                   <input
                     required
                     type="text"
                     value={newGoal.title}
                     onChange={e => setNewGoal({...newGoal, title: e.target.value})}
                     placeholder="e.g. Meatless Mondays"
-                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-gray-100 focus:outline-none focus:border-emerald-500 transition-colors"
+                    className="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-4 py-2.5 text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-emerald-500 transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">Description (Optional)</label>
+                  <label className="block text-sm font-medium text-[var(--foreground)] mb-1">Description (Optional)</label>
                   <textarea
                     value={newGoal.description}
                     onChange={e => setNewGoal({...newGoal, description: e.target.value})}
                     placeholder="Details about your goal..."
                     rows={3}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-gray-100 focus:outline-none focus:border-emerald-500 transition-colors resize-none"
+                    className="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-4 py-2.5 text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-emerald-500 transition-colors resize-none"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Target Date</label>
+                    <label className="block text-sm font-medium text-[var(--foreground)] mb-1">Target Date</label>
                     <input
                       type="date"
                       value={newGoal.target_date}
                       onChange={e => setNewGoal({...newGoal, target_date: e.target.value})}
-                      className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-gray-100 focus:outline-none focus:border-emerald-500 transition-colors"
+                      className="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-4 py-2.5 text-[var(--foreground)] focus:outline-none focus:border-emerald-500 transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Eco Reward</label>
+                    <label className="block text-sm font-medium text-[var(--foreground)] mb-1">Eco Reward</label>
                     <input
                       type="number"
                       value={newGoal.eco_score_reward}
                       onChange={e => setNewGoal({...newGoal, eco_score_reward: parseInt(e.target.value) || 50})}
                       min="10" max="500" step="10"
-                      className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-gray-100 focus:outline-none focus:border-emerald-500 transition-colors"
+                      className="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-4 py-2.5 text-[var(--foreground)] focus:outline-none focus:border-emerald-500 transition-colors"
                     />
                   </div>
                 </div>
@@ -211,13 +211,13 @@ export default function Goals() {
                   <button
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="flex-1 px-4 py-2.5 text-gray-400 hover:text-gray-200 transition-colors font-medium"
+                    className="flex-1 px-4 py-2.5 text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors font-medium"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg py-2.5 font-medium transition-colors"
+                    className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-[var(--foreground)] rounded-lg py-2.5 font-medium transition-colors"
                   >
                     Create Goal
                   </button>

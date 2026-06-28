@@ -59,6 +59,42 @@ async def seed_community_events(db):
         db.add_all([event1, event2])
         await db.commit()
 
+async def sync_gamification_points(db):
+    """Sync gamification total_eco_points for all users based on their actual activities."""
+    from app.models.activity import Activity
+    from app.models.gamification import GamificationProfile
+    from sqlalchemy import select, func
+    
+    # Get all users with their total activity impact
+    result = await db.execute(
+        select(Activity.user_id, func.sum(func.abs(Activity.impact_score)).label("total"))
+        .group_by(Activity.user_id)
+    )
+    rows = result.all()
+    
+    for user_id, total_impact in rows:
+        total_pts = int(total_impact or 0)
+        # Get or create gamification profile
+        gp_result = await db.execute(
+            select(GamificationProfile).where(GamificationProfile.user_id == user_id)
+        )
+        gp = gp_result.scalar_one_or_none()
+        if not gp:
+            gp = GamificationProfile(user_id=user_id, total_eco_points=total_pts)
+            db.add(gp)
+        elif gp.total_eco_points < total_pts:
+            gp.total_eco_points = total_pts
+        # Also update level
+        levels = [(3000, "Planet Protector"), (1500, "Climate Guardian"), (500, "Green Explorer"), (0, "Eco Rookie")]
+        
+        if gp:
+            levels = [(3000, "Planet Protector"), (1500, "Climate Guardian"), (500, "Green Explorer"), (0, "Eco Rookie")]
+            for threshold, name in levels:
+                if gp.total_eco_points >= threshold:
+                    gp.current_level = name
+                    break
+    await db.commit()
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Ensure all tables exist (fixes 500 crashes on Render for new models)
@@ -70,6 +106,7 @@ async def lifespan(app: FastAPI):
         await seed_emission_factors(db)
         await seed_demo_admin(db)
         await seed_community_events(db)
+        await sync_gamification_points(db)
     yield
     # Shutdown logic
 

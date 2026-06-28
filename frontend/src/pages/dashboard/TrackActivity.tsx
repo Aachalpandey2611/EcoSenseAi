@@ -99,30 +99,30 @@ export default function TrackActivity() {
   return (
     <div className="min-h-screen bg-transparent p-6 flex flex-col items-center pt-24">
       <div className="w-full max-w-2xl relative">
-        <Link to="/dashboard" className="absolute -top-12 left-0 text-sm font-medium text-slate-400 hover:text-white flex items-center transition-colors">
+        <Link to="/dashboard" className="absolute -top-12 left-0 text-sm font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] flex items-center transition-colors">
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to Dashboard
         </Link>
 
         <GlassPanel className="p-8">
           <div className="mb-8 text-center">
-            <h2 className="text-3xl font-bold text-white mb-2">Log Activity</h2>
-            <p className="text-slate-400">Track your environmental impact in real-time.</p>
+            <h2 className="text-3xl font-bold text-[var(--foreground)] mb-2">Log Activity</h2>
+            <p className="text-[var(--muted-foreground)]">Track your environmental impact in real-time.</p>
           </div>
 
           {/* Tabs */}
-          <div className="flex flex-wrap gap-2 mb-8 p-1 bg-slate-900/50 rounded-lg">
+          <div className="flex flex-wrap gap-2 mb-8 p-1 bg-[var(--card)]/50 rounded-lg">
             {CATEGORIES.map(cat => (
               <button
                 key={cat.id}
                 onClick={() => setActiveTab(cat.id)}
                 className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-md text-sm font-medium transition-all relative ${
-                  activeTab === cat.id ? 'text-white' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                  activeTab === cat.id ? 'text-[var(--foreground)]' : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--card)]/50'
                 }`}
               >
                 {activeTab === cat.id && (
                   <motion.div
                     layoutId="activeTab"
-                    className="absolute inset-0 bg-brand-500/20 border border-brand-500/50 rounded-md"
+                    className="absolute inset-0 bg-[var(--primary)]/20 border border-[var(--primary)]/50 rounded-md"
                     initial={false}
                     transition={{ type: "spring", stiffness: 500, damping: 30 }}
                   />
@@ -149,10 +149,10 @@ export default function TrackActivity() {
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", bounce: 0.5 }}
                 >
-                  <CheckCircle2 className="w-20 h-20 text-brand-500 mb-4" />
+                  <CheckCircle2 className="w-20 h-20 text-[var(--primary)] mb-4" />
                 </motion.div>
-                <h3 className="text-2xl font-bold text-white mb-2">Activity Logged!</h3>
-                <p className="text-slate-400">Your Eco Score has been updated.</p>
+                <h3 className="text-2xl font-bold text-[var(--foreground)] mb-2">Activity Logged!</h3>
+                <p className="text-[var(--muted-foreground)]">Your Eco Score has been updated.</p>
               </motion.div>
             ) : (
               <motion.form
@@ -165,7 +165,7 @@ export default function TrackActivity() {
                 className="space-y-6"
               >
                 <div className="space-y-3">
-                  <label className="text-sm font-medium text-slate-300">Activity Type</label>
+                  <label className="text-sm font-medium text-[var(--foreground)]">Activity Type</label>
                   <Controller
                     name="type"
                     control={control}
@@ -180,11 +180,11 @@ export default function TrackActivity() {
                             }}
                             className={`p-4 rounded-lg border cursor-pointer transition-all ${
                               field.value === t.id 
-                                ? 'bg-brand-500/20 border-brand-500' 
-                                : 'bg-slate-900/50 border-slate-700 hover:border-slate-500'
+                                ? 'bg-[var(--primary)]/20 border-[var(--primary)]' 
+                                : 'bg-[var(--card)]/50 border-[var(--border)] hover:border-slate-500'
                             }`}
                           >
-                            <span className="text-sm font-medium text-slate-200">{t.label}</span>
+                            <span className="text-sm font-medium text-[var(--foreground)]">{t.label}</span>
                           </div>
                         ))}
                       </div>

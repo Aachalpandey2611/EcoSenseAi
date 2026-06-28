@@ -8,7 +8,7 @@ import { adminApi } from '@/api/admin';
 import type { AdminUser } from '@/api/admin';
 
 const ROLE_COLORS: Record<string, string> = {
-  user: 'bg-slate-700/50 text-slate-300',
+  user: 'bg-[var(--border)]/50 text-[var(--foreground)]',
   admin: 'bg-blue-500/15 text-blue-400 border border-blue-500/20',
   super_admin: 'bg-amber-500/15 text-amber-400 border border-amber-500/20',
 };
@@ -76,10 +76,10 @@ export default function AdminUsers() {
       {/* Header */}
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-2xl font-bold text-white">User Management</h1>
-          <p className="text-slate-500 text-sm mt-1">{data.total.toLocaleString()} total users</p>
+          <h1 className="text-2xl font-bold text-[var(--foreground)]">User Management</h1>
+          <p className="text-[var(--foreground)]0 text-sm mt-1">{data.total.toLocaleString()} total users</p>
         </div>
-        <button onClick={load} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-sm border border-white/5 transition-all">
+        <button onClick={load} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-[var(--foreground)] text-sm border border-white/5 transition-all">
           <RefreshCw className="w-4 h-4" /> Refresh
         </button>
       </div>
@@ -87,18 +87,18 @@ export default function AdminUsers() {
       {/* Filters */}
       <div className="flex gap-3 flex-wrap">
         <div className="relative flex-1 min-w-48">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--foreground)]0" />
           <input
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search by name or email…"
-            className="w-full bg-[#0d1117]/80 border border-white/5 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-brand-500/50 transition"
+            className="w-full bg-[#0d1117]/80 border border-white/5 rounded-xl pl-10 pr-4 py-2.5 text-sm text-[var(--foreground)] placeholder:text-slate-600 focus:outline-none focus:border-[var(--primary)]/50 transition"
           />
         </div>
         <select
           value={roleFilter}
           onChange={e => setRoleFilter(e.target.value)}
-          className="bg-[#0d1117]/80 border border-white/5 rounded-xl px-4 py-2.5 text-sm text-slate-300 focus:outline-none focus:border-brand-500/50 transition"
+          className="bg-[#0d1117]/80 border border-white/5 rounded-xl px-4 py-2.5 text-sm text-[var(--foreground)] focus:outline-none focus:border-[var(--primary)]/50 transition"
         >
           <option value="">All Roles</option>
           <option value="user">User</option>
@@ -113,18 +113,18 @@ export default function AdminUsers() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-white/5">
-                <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">User</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Role</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Joined</th>
-                <th className="text-right px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-[var(--foreground)]0 uppercase tracking-wider">User</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-[var(--foreground)]0 uppercase tracking-wider">Role</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-[var(--foreground)]0 uppercase tracking-wider">Status</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-[var(--foreground)]0 uppercase tracking-wider">Joined</th>
+                <th className="text-right px-5 py-3 text-xs font-semibold text-[var(--foreground)]0 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/[0.03]">
               {loading ? (
-                <tr><td colSpan={5} className="text-center py-16"><div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto" /></td></tr>
+                <tr><td colSpan={5} className="text-center py-16"><div className="w-8 h-8 border-2 border-[var(--primary)] border-t-transparent rounded-full animate-spin mx-auto" /></td></tr>
               ) : data.users.length === 0 ? (
-                <tr><td colSpan={5} className="text-center py-16 text-slate-500">No users found</td></tr>
+                <tr><td colSpan={5} className="text-center py-16 text-[var(--foreground)]0">No users found</td></tr>
               ) : data.users.map(user => {
                 return (
                   <motion.tr
@@ -135,12 +135,12 @@ export default function AdminUsers() {
                   >
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-brand-500/20 text-brand-400 flex items-center justify-center font-bold text-xs shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-[var(--primary)]/20 text-[var(--primary)] flex items-center justify-center font-bold text-xs shrink-0">
                           {user.full_name.charAt(0).toUpperCase()}
                         </div>
                         <div>
-                          <p className="font-medium text-white text-sm">{user.full_name}</p>
-                          <p className="text-xs text-slate-500">{user.email}</p>
+                          <p className="font-medium text-[var(--foreground)] text-sm">{user.full_name}</p>
+                          <p className="text-xs text-[var(--foreground)]0">{user.email}</p>
                         </div>
                       </div>
                     </td>
@@ -162,7 +162,7 @@ export default function AdminUsers() {
                         {user.is_active ? 'Active' : 'Suspended'}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-slate-500 text-xs">
+                    <td className="px-5 py-4 text-[var(--foreground)]0 text-xs">
                       {new Date(user.created_at).toLocaleDateString()}
                     </td>
                     <td className="px-5 py-4">
@@ -195,17 +195,17 @@ export default function AdminUsers() {
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between px-5 py-3 border-t border-white/5">
-            <p className="text-xs text-slate-500">Page {page} of {totalPages}</p>
+            <p className="text-xs text-[var(--foreground)]0">Page {page} of {totalPages}</p>
             <div className="flex gap-2">
               <button
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 disabled:opacity-30 transition"
+                className="p-1.5 rounded-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-white/5 disabled:opacity-30 transition"
               ><ChevronLeft className="w-4 h-4" /></button>
               <button
                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 disabled:opacity-30 transition"
+                className="p-1.5 rounded-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-white/5 disabled:opacity-30 transition"
               ><ChevronRight className="w-4 h-4" /></button>
             </div>
           </div>
@@ -217,9 +217,9 @@ export default function AdminUsers() {
         {toast && (
           <motion.div
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-6 right-6 z-50 bg-slate-900 border border-white/10 text-white text-sm px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3"
+            className="fixed bottom-6 right-6 z-50 bg-[var(--card)] border border-white/10 text-[var(--foreground)] text-sm px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3"
           >
-            <CheckCircle className="w-4 h-4 text-brand-400" />
+            <CheckCircle className="w-4 h-4 text-[var(--primary)]" />
             {toast}
           </motion.div>
         )}

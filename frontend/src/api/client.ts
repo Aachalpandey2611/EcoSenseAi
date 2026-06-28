@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8001/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8005/api/v1';
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -62,6 +62,14 @@ apiClient.interceptors.response.use(
         // If refresh fails, still reject with the original 401 error so components can handle it properly
         return Promise.reject(error);
       }
+    }
+    
+    // Catch 402 Payment Required for subscription limits
+    if (error.response?.status === 402) {
+      const { useSubscriptionStore } = await import('../store/subscriptionStore');
+      const message = error.response.data?.detail || 'Upgrade required to access this feature.';
+      useSubscriptionStore.getState().openUpgradeModal(message);
+      return Promise.reject(error);
     }
     
     return Promise.reject(error);

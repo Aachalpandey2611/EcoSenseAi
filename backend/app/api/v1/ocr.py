@@ -38,8 +38,17 @@ class OCRSaveRequest(BaseModel):
 async def analyze_upload(
     file: UploadFile = File(...),
     current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db),
 ):
     """Upload a bill image, run OCR, and return extracted data."""
+    # Check Tier Limit
+    if current_user.subscription_tier == "free" and current_user.ocr_count >= 3:
+        if current_user.role not in ("admin", "super_admin"):
+            raise HTTPException(
+                status_code=402,
+                detail="You have reached your free tier limit of 3 OCR uploads. Please upgrade to Pro for unlimited uploads."
+            )
+
     # Validate file type
     allowed_types = ["image/png", "image/jpeg", "image/jpg", "image/webp", "image/bmp"]
     if file.content_type not in allowed_types:
@@ -58,6 +67,12 @@ async def analyze_upload(
     # Run OCR pipeline
     try:
         result = await analyze_bill(filename)
+        
+        # Increment OCR usage on success
+        if current_user.subscription_tier == "free":
+            current_user.ocr_count += 1
+            await db.commit()
+            
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"OCR processing failed: {str(e)}")
 

@@ -1,6 +1,7 @@
 
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
+import { UpgradeModal } from '../components/subscription/UpgradeModal';
 
 export const ProtectedRoute = () => {
   const { isAuthenticated, user } = useAuthStore();
@@ -19,7 +20,12 @@ export const ProtectedRoute = () => {
     return <Navigate to="/dashboard" replace />;
   }
 
-  return <Outlet />;
+  return (
+    <>
+      <UpgradeModal />
+      <Outlet />
+    </>
+  );
 };
 
 export const PublicRoute = () => {

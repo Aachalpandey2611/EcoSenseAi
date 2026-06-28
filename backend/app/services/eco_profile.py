@@ -20,6 +20,14 @@ def calculate_eco_score(data: OnboardingRequest) -> int:
     elif data.household_size in ["3", "4", "5+"]:
         score += 20 * int(data.household_size[0])
 
+    # Home Type
+    if data.home_type == "House":
+        score -= 50
+    elif data.home_type == "Apartment":
+        score += 50
+    elif data.home_type == "Tiny Home":
+        score += 150
+
     # Diet pattern
     if data.diet_pattern == "Vegan":
         score += 200
@@ -79,6 +87,7 @@ async def create_eco_profile(
         # Update all fields on re-submission
         existing_profile.household_size = data.household_size
         existing_profile.location = data.location
+        existing_profile.home_type = data.home_type
         existing_profile.vehicle_type = data.vehicle_type
         existing_profile.diet_pattern = data.diet_pattern
         existing_profile.electricity_usage = data.electricity_usage
@@ -93,6 +102,7 @@ async def create_eco_profile(
         user_id=user_id,
         household_size=data.household_size,
         location=data.location,
+        home_type=data.home_type,
         vehicle_type=data.vehicle_type,
         diet_pattern=data.diet_pattern,
         electricity_usage=data.electricity_usage,

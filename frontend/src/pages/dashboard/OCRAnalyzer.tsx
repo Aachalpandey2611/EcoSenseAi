@@ -71,7 +71,9 @@ export default function OCRAnalyzer() {
     formData.append('file', file);
     try {
       const response = await apiClient.post<OCRResult>('/ocr/analyze', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
       // Stage 5: Log the exact response from backend
@@ -88,7 +90,14 @@ export default function OCRAnalyzer() {
       setEditedValue(s.value ?? '');
       setEditedUnit(s.unit);
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Failed to analyze bill. Please try again.');
+      let errorMsg = 'Failed to analyze bill. Please try again.';
+      const detail = err.response?.data?.detail;
+      if (typeof detail === 'string') {
+        errorMsg = detail;
+      } else if (Array.isArray(detail)) {
+        errorMsg = detail.map((d: any) => d.msg || 'Invalid input').join(', ');
+      }
+      setError(errorMsg);
     } finally {
       setIsUploading(false);
     }
@@ -130,8 +139,8 @@ export default function OCRAnalyzer() {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
-          <div className="h-10 w-10 rounded-xl bg-brand-500/20 flex items-center justify-center">
-            <Camera className="h-5 w-5 text-brand-400" />
+          <div className="h-10 w-10 rounded-xl bg-[var(--primary)]/20 flex items-center justify-center">
+            <Camera className="h-5 w-5 text-[var(--primary)]" />
           </div>
           <h2 className="text-2xl font-bold text-[var(--foreground)]">Smart Bill Analyzer</h2>
         </div>
@@ -155,8 +164,8 @@ export default function OCRAnalyzer() {
           animate={{ opacity: 1, scale: 1 }}
           className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-12 text-center"
         >
-          <div className="mx-auto w-20 h-20 bg-brand-500/20 rounded-full flex items-center justify-center mb-6">
-            <CheckCircle className="h-10 w-10 text-brand-400" />
+          <div className="mx-auto w-20 h-20 bg-[var(--primary)]/20 rounded-full flex items-center justify-center mb-6">
+            <CheckCircle className="h-10 w-10 text-[var(--primary)]" />
           </div>
           <h2 className="text-2xl font-bold text-[var(--foreground)] mb-2">Activity Logged!</h2>
           <p className="text-[var(--muted-foreground)] mb-8">
@@ -175,8 +184,8 @@ export default function OCRAnalyzer() {
                 {...getRootProps()}
                 className={`flex-1 border-2 border-dashed rounded-xl flex flex-col items-center justify-center p-12 text-center cursor-pointer transition-colors min-h-[320px] ${
                   isDragActive
-                    ? 'border-brand-500 bg-brand-500/5'
-                    : 'border-slate-700 hover:border-brand-500/50 hover:bg-[var(--muted)]/30'
+                    ? 'border-[var(--primary)] bg-[var(--primary)]/5'
+                    : 'border-[var(--border)] hover:border-[var(--primary)]/50 hover:bg-[var(--muted)]/30'
                 }`}
               >
                 <input {...getInputProps()} />
@@ -191,7 +200,7 @@ export default function OCRAnalyzer() {
                   <img src={preview!} alt="Bill Preview" className="max-w-full max-h-[480px] object-contain" />
                   <button
                     onClick={(e) => { e.stopPropagation(); resetAll(); }}
-                    className="absolute top-3 right-3 bg-[var(--card)]/80 hover:bg-slate-700 p-1.5 rounded-full transition-colors"
+                    className="absolute top-3 right-3 bg-[var(--card)]/80 hover:bg-[var(--border)] p-1.5 rounded-full transition-colors"
                   >
                     <XCircle className="h-5 w-5 text-[var(--muted-foreground)]" />
                   </button>
@@ -266,7 +275,7 @@ export default function OCRAnalyzer() {
                         <select
                           value={editedCategory}
                           onChange={(e) => setEditedCategory(e.target.value)}
-                          className="w-full px-3 py-2 bg-[var(--muted)] border border-slate-700 rounded-lg text-[var(--foreground)] text-sm focus:outline-none focus:border-brand-500"
+                          className="w-full px-3 py-2 bg-[var(--muted)] border border-[var(--border)] rounded-lg text-[var(--foreground)] text-sm focus:outline-none focus:border-[var(--primary)]"
                         >
                           <option value="electricity">Electricity</option>
                           <option value="water">Water</option>
@@ -280,7 +289,7 @@ export default function OCRAnalyzer() {
                           type="text"
                           value={editedType}
                           onChange={(e) => setEditedType(e.target.value)}
-                          className="w-full px-3 py-2 bg-[var(--muted)] border border-slate-700 rounded-lg text-[var(--foreground)] text-sm focus:outline-none focus:border-brand-500"
+                          className="w-full px-3 py-2 bg-[var(--muted)] border border-[var(--border)] rounded-lg text-[var(--foreground)] text-sm focus:outline-none focus:border-[var(--primary)]"
                         />
                       </div>
                     </div>
@@ -291,7 +300,7 @@ export default function OCRAnalyzer() {
                           type="number"
                           value={editedValue}
                           onChange={(e) => setEditedValue(Number(e.target.value))}
-                          className="w-full px-3 py-2 bg-[var(--muted)] border border-slate-700 rounded-lg text-[var(--foreground)] text-sm focus:outline-none focus:border-brand-500"
+                          className="w-full px-3 py-2 bg-[var(--muted)] border border-[var(--border)] rounded-lg text-[var(--foreground)] text-sm focus:outline-none focus:border-[var(--primary)]"
                         />
                       </div>
                       <div>
@@ -300,7 +309,7 @@ export default function OCRAnalyzer() {
                           type="text"
                           value={editedUnit}
                           onChange={(e) => setEditedUnit(e.target.value)}
-                          className="w-full px-3 py-2 bg-[var(--muted)] border border-slate-700 rounded-lg text-[var(--foreground)] text-sm focus:outline-none focus:border-brand-500"
+                          className="w-full px-3 py-2 bg-[var(--muted)] border border-[var(--border)] rounded-lg text-[var(--foreground)] text-sm focus:outline-none focus:border-[var(--primary)]"
                         />
                       </div>
                     </div>

@@ -50,16 +50,16 @@ export default function AdminEvents() {
   return (
     <div className="space-y-5 max-w-6xl mx-auto">
       <div>
-        <h1 className="text-2xl font-bold text-white">Events Management</h1>
-        <p className="text-slate-500 text-sm mt-1">{events.length} community events</p>
+        <h1 className="text-2xl font-bold text-[var(--foreground)]">Events Management</h1>
+        <p className="text-[var(--foreground)]0 text-sm mt-1">{events.length} community events</p>
       </div>
 
       {loading ? (
         <div className="flex items-center justify-center h-48">
-          <div className="w-10 h-10 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-10 h-10 border-2 border-[var(--primary)] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : events.length === 0 ? (
-        <div className="text-center py-20 text-slate-500">No events found</div>
+        <div className="text-center py-20 text-[var(--foreground)]0">No events found</div>
       ) : (
         <div className="space-y-3">
           {events.map(event => (
@@ -75,28 +75,28 @@ export default function AdminEvents() {
                 <div className="space-y-3">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs text-slate-500 mb-1 block">Title</label>
+                      <label className="text-xs text-[var(--foreground)]0 mb-1 block">Title</label>
                       <input
                         value={editData.title || ''}
                         onChange={e => setEditData(d => ({ ...d, title: e.target.value }))}
-                        className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500/50"
+                        className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-[var(--foreground)] focus:outline-none focus:border-[var(--primary)]/50"
                       />
                     </div>
                     <div>
-                      <label className="text-xs text-slate-500 mb-1 block">Location</label>
+                      <label className="text-xs text-[var(--foreground)]0 mb-1 block">Location</label>
                       <input
                         value={editData.location || ''}
                         onChange={e => setEditData(d => ({ ...d, location: e.target.value }))}
-                        className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500/50"
+                        className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-[var(--foreground)] focus:outline-none focus:border-[var(--primary)]/50"
                       />
                     </div>
                     <div>
-                      <label className="text-xs text-slate-500 mb-1 block">Max Participants</label>
+                      <label className="text-xs text-[var(--foreground)]0 mb-1 block">Max Participants</label>
                       <input
                         type="number"
                         value={editData.max_participants || ''}
                         onChange={e => setEditData(d => ({ ...d, max_participants: parseInt(e.target.value) }))}
-                        className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500/50"
+                        className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-[var(--foreground)] focus:outline-none focus:border-[var(--primary)]/50"
                       />
                     </div>
                     <div className="flex items-end gap-3">
@@ -107,15 +107,15 @@ export default function AdminEvents() {
                           onChange={e => setEditData(d => ({ ...d, is_active: e.target.checked }))}
                           className="w-4 h-4 rounded accent-brand-500"
                         />
-                        <span className="text-sm text-slate-300">Active</span>
+                        <span className="text-sm text-[var(--foreground)]">Active</span>
                       </label>
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <button onClick={saveEdit} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-brand-500 hover:bg-brand-400 text-white text-sm font-medium transition-all">
+                    <button onClick={saveEdit} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--primary)] hover:bg-brand-400 text-[var(--foreground)] text-sm font-medium transition-all">
                       <Save className="w-4 h-4" /> Save
                     </button>
-                    <button onClick={() => setEditId(null)} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-sm transition-all">
+                    <button onClick={() => setEditId(null)} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-[var(--foreground)] text-sm transition-all">
                       <X className="w-4 h-4" /> Cancel
                     </button>
                   </div>
@@ -125,7 +125,7 @@ export default function AdminEvents() {
                 <div className="flex items-start gap-4">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 flex-wrap mb-2">
-                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${EVENT_TYPE_COLORS[event.event_type] || 'bg-slate-700 text-slate-400'}`}>
+                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${EVENT_TYPE_COLORS[event.event_type] || 'bg-[var(--border)] text-[var(--muted-foreground)]'}`}>
                         {event.event_type}
                       </span>
                       <span className={`inline-flex items-center gap-1 text-xs ${event.is_active ? 'text-emerald-400' : 'text-red-400'}`}>
@@ -133,16 +133,16 @@ export default function AdminEvents() {
                         {event.is_active ? 'Active' : 'Inactive'}
                       </span>
                     </div>
-                    <h3 className="font-semibold text-white">{event.title}</h3>
-                    <p className="text-xs text-slate-500 mt-0.5 line-clamp-1">{event.description}</p>
-                    <div className="flex items-center gap-4 mt-2 text-xs text-slate-500">
+                    <h3 className="font-semibold text-[var(--foreground)]">{event.title}</h3>
+                    <p className="text-xs text-[var(--foreground)]0 mt-0.5 line-clamp-1">{event.description}</p>
+                    <div className="flex items-center gap-4 mt-2 text-xs text-[var(--foreground)]0">
                       <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {event.location}</span>
                       <span className="flex items-center gap-1"><CalendarDays className="w-3 h-3" /> {new Date(event.event_date).toLocaleDateString()}</span>
                       <span className="flex items-center gap-1"><Users className="w-3 h-3" /> {event.current_participants}/{event.max_participants}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
-                    <button onClick={() => startEdit(event)} className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+                    <button onClick={() => startEdit(event)} className="p-2 rounded-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-white/5 transition-all">
                       <Pencil className="w-4 h-4" />
                     </button>
                     <button onClick={() => deleteEvent(event.id)} className="p-2 rounded-lg text-red-400 hover:bg-red-500/10 transition-all">
@@ -160,9 +160,9 @@ export default function AdminEvents() {
         {toast && (
           <motion.div
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-6 right-6 z-50 bg-slate-900 border border-white/10 text-white text-sm px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3"
+            className="fixed bottom-6 right-6 z-50 bg-[var(--card)] border border-white/10 text-[var(--foreground)] text-sm px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3"
           >
-            <CheckCircle className="w-4 h-4 text-brand-400" />{toast}
+            <CheckCircle className="w-4 h-4 text-[var(--primary)]" />{toast}
           </motion.div>
         )}
       </AnimatePresence>

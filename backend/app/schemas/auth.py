@@ -28,6 +28,10 @@ class UserLogin(BaseModel):
     password: str
 
 
+class GoogleLoginRequest(BaseModel):
+    token: str  # Mock token for hackathon
+
+
 class ForgotPasswordRequest(BaseModel):
     email: EmailStr
 

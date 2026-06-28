@@ -32,9 +32,10 @@ class EcoProfile(Base):
     # Onboarding Data
     household_size: Mapped[str] = mapped_column(String(50), nullable=False)
     location: Mapped[str] = mapped_column(String(100), nullable=False)
+    home_type: Mapped[str] = mapped_column(String(100), nullable=False, default="Apartment")
     vehicle_type: Mapped[str] = mapped_column(String(100), nullable=False)
-    diet_pattern: Mapped[str] = mapped_column(String(100), nullable=False)
-    electricity_usage: Mapped[str] = mapped_column(String(100), nullable=False)
+    diet_pattern: Mapped[str] = mapped_column(String(100), nullable=False, default="Omnivore")
+    electricity_usage: Mapped[str] = mapped_column(String(100), nullable=False, default="Average")
     
     # Calculated Score
     eco_score: Mapped[int] = mapped_column(Integer, nullable=False, default=1000)

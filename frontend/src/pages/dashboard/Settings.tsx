@@ -11,7 +11,7 @@ import { t } from '@/i18n';
 const Toggle = ({ checked, onChange }: { checked: boolean; onChange: () => void }) => (
   <button
     onClick={onChange}
-    className={`relative w-11 h-6 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500/50 ${checked ? 'bg-brand-500' : 'bg-slate-700'}`}
+    className={`relative w-11 h-6 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500/50 ${checked ? 'bg-[var(--primary)]' : 'bg-[var(--border)]'}`}
   >
     <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${checked ? 'translate-x-6' : 'translate-x-1'}`} />
   </button>
@@ -20,7 +20,7 @@ const Toggle = ({ checked, onChange }: { checked: boolean; onChange: () => void 
 // ── Section wrapper ──────────────────────────────────────────────────────────
 const Section = ({ title, icon: Icon, accent = 'brand', children }: { title: string; icon: any; accent?: string; children: React.ReactNode }) => {
   const accentMap: Record<string, string> = {
-    brand: 'bg-brand-500/15 text-brand-400',
+    brand: 'bg-[var(--primary)]/15 text-[var(--primary)]',
     amber: 'bg-amber-500/15 text-amber-400',
     red:   'bg-red-500/15 text-red-400',
     cyan:  'bg-cyan-500/15 text-cyan-400',
@@ -29,13 +29,13 @@ const Section = ({ title, icon: Icon, accent = 'brand', children }: { title: str
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl border border-white/10 bg-slate-900/50 backdrop-blur-md p-6"
+      className="rounded-2xl border border-white/10 bg-[var(--card)]/50 backdrop-blur-md p-6"
     >
       <div className="flex items-center gap-3 mb-5 pb-4 border-b border-white/5">
         <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${accentMap[accent]}`}>
           <Icon className="w-5 h-5" />
         </div>
-        <h2 className="text-base font-semibold text-white">{title}</h2>
+        <h2 className="text-base font-semibold text-[var(--foreground)]">{title}</h2>
       </div>
       {children}
     </motion.div>
@@ -46,8 +46,8 @@ const Section = ({ title, icon: Icon, accent = 'brand', children }: { title: str
 const NotifRow = ({ label, description, checked, onChange }: { label: string; description: string; checked: boolean; onChange: () => void }) => (
   <div className="flex items-center justify-between py-3 border-b border-white/5 last:border-none">
     <div>
-      <p className="text-sm font-medium text-white">{label}</p>
-      <p className="text-xs text-slate-500 mt-0.5">{description}</p>
+      <p className="text-sm font-medium text-[var(--foreground)]">{label}</p>
+      <p className="text-xs text-[var(--foreground)]0 mt-0.5">{description}</p>
     </div>
     <Toggle checked={checked} onChange={onChange} />
   </div>
@@ -104,8 +104,8 @@ export default function Settings() {
     <div className="p-8 max-w-2xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">{t(language, 'settings')}</h1>
-        <p className="text-sm text-slate-400 mt-1">Customize notifications, appearance, and account preferences</p>
+        <h1 className="text-2xl font-bold text-[var(--foreground)]">{t(language, 'settings')}</h1>
+        <p className="text-sm text-[var(--muted-foreground)] mt-1">Customize notifications, appearance, and account preferences</p>
       </div>
 
       {/* Notifications */}
@@ -123,7 +123,7 @@ export default function Settings() {
         </div>
         <button
           onClick={handleSaveNotifs}
-          className="mt-5 flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-white text-sm font-medium transition-all"
+          className="mt-5 flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--primary)] hover:bg-brand-400 text-[var(--foreground)] text-sm font-medium transition-all"
         >
           {saved ? <><CheckCircle className="w-4 h-4" /> Saved!</> : 'Save Preferences'}
         </button>
@@ -131,7 +131,7 @@ export default function Settings() {
 
       {/* Appearance */}
       <Section title={t(language, 'appearance')} icon={Palette} accent="cyan">
-        <p className="text-xs text-slate-500 mb-3">Choose your preferred theme</p>
+        <p className="text-xs text-[var(--foreground)]0 mb-3">Choose your preferred theme</p>
         <div className="flex gap-3">
           {themeOptions.map(({ id, label, icon: Icon }) => (
             <button
@@ -139,8 +139,8 @@ export default function Settings() {
               onClick={() => handleThemeChange(id)}
               className={`flex-1 flex flex-col items-center gap-2 py-4 rounded-xl border transition-all ${
                 theme === id
-                  ? 'border-brand-500 bg-brand-500/10 text-brand-400'
-                  : 'border-white/10 text-slate-400 hover:border-white/20 hover:text-slate-200'
+                  ? 'border-[var(--primary)] bg-[var(--primary)]/10 text-[var(--primary)]'
+                  : 'border-white/10 text-[var(--muted-foreground)] hover:border-white/20 hover:text-[var(--foreground)]'
               }`}
             >
               <Icon className="w-5 h-5" />
@@ -153,11 +153,11 @@ export default function Settings() {
       {/* Language */}
       <Section title={t(language, 'language')} icon={Globe} accent="amber">
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-medium text-slate-400 uppercase tracking-wider">Display Language</label>
+          <label className="text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wider">Display Language</label>
           <select
             value={language}
             onChange={handleLanguageChange}
-            className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-brand-500/50 transition"
+            className="w-full bg-[var(--card)] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-brand-500/50 transition"
           >
             <option value="en">🇬🇧 English</option>
             <option value="hi">🇮🇳 Hindi</option>
@@ -177,8 +177,8 @@ export default function Settings() {
             { label: 'Email Verified', value: 'Yes',     green: true },
           ].map(row => (
             <div key={row.label} className="flex items-center justify-between py-3 border-b border-white/5 last:border-none">
-              <span className="text-sm text-slate-400">{row.label}</span>
-              <span className={`text-xs font-medium px-3 py-1 rounded-full ${row.green ? 'bg-emerald-500/10 text-emerald-400' : 'bg-slate-700/50 text-slate-300'}`}>
+              <span className="text-sm text-[var(--muted-foreground)]">{row.label}</span>
+              <span className={`text-xs font-medium px-3 py-1 rounded-full ${row.green ? 'bg-emerald-500/10 text-emerald-400' : 'bg-[var(--border)]/50 text-[var(--foreground)]'}`}>
                 {row.value}
               </span>
             </div>
@@ -191,7 +191,7 @@ export default function Settings() {
         <div className="space-y-3">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-sm font-medium transition-all"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-[var(--card)] hover:bg-[var(--border)] text-[var(--foreground)] hover:text-[var(--foreground)] text-sm font-medium transition-all"
           >
             <LogOut className="w-4 h-4" />
             {t(language, 'signOut')}

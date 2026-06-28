@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
 
-from app.api.deps import get_db, get_current_active_user
+from app.api.deps import get_db, require_pro_tier
 from app.models.user import User
 from app.services.ai_coach import chat, get_chat_history, get_suggested_actions
 
@@ -32,7 +32,7 @@ class ChatMessageOut(BaseModel):
 @router.get("/history", response_model=list[ChatMessageOut])
 async def get_history(
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(require_pro_tier),
 ) -> Any:
     """Retrieve the user's chat history."""
     return await get_chat_history(db, current_user.id)
@@ -42,7 +42,7 @@ async def get_history(
 async def send_chat(
     data: ChatRequest,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(require_pro_tier),
 ) -> Any:
     """Send a message to the AI Green Coach and get a response."""
     response_text = await chat(db, current_user.id, data.message)
@@ -51,7 +51,7 @@ async def send_chat(
 
 @router.get("/suggestions")
 async def get_suggestions(
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(require_pro_tier),
 ) -> Any:
     """Get suggested quick actions for the chat UI."""
     return await get_suggested_actions()

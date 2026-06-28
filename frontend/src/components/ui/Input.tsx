@@ -17,20 +17,20 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full space-y-2">
         {label && (
-          <label className="text-sm font-medium text-slate-300">
+          <label className="text-sm font-medium text-[var(--foreground)]">
             {label}
           </label>
         )}
         <div className="relative">
           {icon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)]">
               {icon}
             </div>
           )}
           <input
             type={inputType}
             className={cn(
-              "flex h-11 w-full rounded-lg px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500",
+              "flex h-11 w-full rounded-lg px-3 py-2 text-sm text-[var(--foreground)] placeholder:text-[var(--foreground)]0",
               "glass-input", // Custom utility from index.css
               icon && "pl-10",
               isPassword && "pr-10",
@@ -44,7 +44,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300 transition-colors focus:outline-none"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors focus:outline-none"
             >
               {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>

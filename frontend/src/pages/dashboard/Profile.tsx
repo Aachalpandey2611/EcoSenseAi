@@ -4,12 +4,12 @@ import { User, Mail, MapPin, Home, Car, Leaf, Zap, Save, Loader2, CheckCircle, C
 import { useAuthStore } from '@/store/authStore';
 import { apiClient } from '@/api/client';
 
-const inputCls = "w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 transition";
+const inputCls = "w-full bg-[var(--card)] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-[var(--foreground)] placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 transition";
 const selectCls = `${inputCls} cursor-pointer`;
 
 const Field = ({ label, icon: Icon, children }: { label: string; icon?: any; children: React.ReactNode }) => (
   <div className="flex flex-col gap-1.5">
-    <label className="text-xs font-medium text-slate-400 uppercase tracking-wider flex items-center gap-1">
+    <label className="text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wider flex items-center gap-1">
       {Icon && <Icon className="w-3.5 h-3.5" />} {label}
     </label>
     {children}
@@ -49,30 +49,30 @@ export default function Profile() {
     <div className="p-8 max-w-2xl mx-auto space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">My Profile</h1>
-        <p className="text-sm text-slate-400 mt-1">Manage your personal info and eco lifestyle data</p>
+        <h1 className="text-2xl font-bold text-[var(--foreground)]">My Profile</h1>
+        <p className="text-sm text-[var(--muted-foreground)] mt-1">Manage your personal info and eco lifestyle data</p>
       </div>
 
       {/* Avatar card */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-2xl border border-white/10 bg-slate-900/50 backdrop-blur-md p-6 flex items-center gap-6"
+        className="rounded-2xl border border-white/10 bg-[var(--card)]/50 backdrop-blur-md p-6 flex items-center gap-6"
       >
         <div className="relative group">
-          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-brand-500 to-cyan-500 flex items-center justify-center text-3xl font-bold text-white shadow-lg shadow-brand-500/20">
+          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-brand-500 to-cyan-500 flex items-center justify-center text-3xl font-bold text-[var(--foreground)] shadow-lg shadow-brand-500/20">
             {initial}
           </div>
           <div className="absolute inset-0 rounded-2xl bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center cursor-pointer">
-            <Camera className="w-5 h-5 text-white" />
+            <Camera className="w-5 h-5 text-[var(--foreground)]" />
           </div>
         </div>
         <div>
-          <p className="text-lg font-semibold text-white">{user?.full_name}</p>
-          <p className="text-sm text-slate-400 flex items-center gap-1.5 mt-0.5">
+          <p className="text-lg font-semibold text-[var(--foreground)]">{user?.full_name}</p>
+          <p className="text-sm text-[var(--muted-foreground)] flex items-center gap-1.5 mt-0.5">
             <Mail className="w-3.5 h-3.5" /> {user?.email}
           </p>
-          <span className="mt-2 inline-block text-xs font-medium px-2.5 py-0.5 rounded-full bg-brand-500/15 text-brand-400">
+          <span className="mt-2 inline-block text-xs font-medium px-2.5 py-0.5 rounded-full bg-[var(--primary)]/15 text-[var(--primary)]">
             Eco Member
           </span>
         </div>
@@ -83,13 +83,13 @@ export default function Profile() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05 }}
-        className="rounded-2xl border border-white/10 bg-slate-900/50 backdrop-blur-md p-6"
+        className="rounded-2xl border border-white/10 bg-[var(--card)]/50 backdrop-blur-md p-6"
       >
         <div className="flex items-center gap-3 mb-5 pb-4 border-b border-white/5">
-          <div className="w-9 h-9 rounded-xl bg-brand-500/15 flex items-center justify-center">
-            <User className="w-5 h-5 text-brand-400" />
+          <div className="w-9 h-9 rounded-xl bg-[var(--primary)]/15 flex items-center justify-center">
+            <User className="w-5 h-5 text-[var(--primary)]" />
           </div>
-          <h2 className="text-base font-semibold text-white">Personal Information</h2>
+          <h2 className="text-base font-semibold text-[var(--foreground)]">Personal Information</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Full Name" icon={User}>
@@ -106,13 +106,13 @@ export default function Profile() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="rounded-2xl border border-white/10 bg-slate-900/50 backdrop-blur-md p-6"
+        className="rounded-2xl border border-white/10 bg-[var(--card)]/50 backdrop-blur-md p-6"
       >
         <div className="flex items-center gap-3 mb-5 pb-4 border-b border-white/5">
           <div className="w-9 h-9 rounded-xl bg-emerald-500/15 flex items-center justify-center">
             <Leaf className="w-5 h-5 text-emerald-400" />
           </div>
-          <h2 className="text-base font-semibold text-white">Eco Lifestyle</h2>
+          <h2 className="text-base font-semibold text-[var(--foreground)]">Eco Lifestyle</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Household Size" icon={Home}>
@@ -152,7 +152,7 @@ export default function Profile() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 px-6 py-3 rounded-xl bg-brand-500 hover:bg-brand-400 disabled:opacity-50 text-white font-medium transition-all shadow-lg shadow-brand-500/20"
+          className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[var(--primary)] hover:bg-brand-400 disabled:opacity-50 text-[var(--foreground)] font-medium transition-all shadow-lg shadow-brand-500/20"
         >
           {saving ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving…</>
            : saved  ? <><CheckCircle className="w-4 h-4" /> Saved!</>

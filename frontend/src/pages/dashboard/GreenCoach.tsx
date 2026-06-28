@@ -1,8 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { Send, Bot, User, Sparkles, Loader2, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
+import { Canvas } from '@react-three/fiber';
 import { apiClient } from '../../api/client';
+import ParticleBackdrop from '@/components/3d/ParticleBackdrop';
 
 interface ChatMessage {
   id: string;
@@ -92,19 +94,28 @@ export default function GreenCoach() {
   };
 
   return (
-    <div className="h-[calc(100vh-5rem)] flex flex-col">
+    <div className="relative h-[calc(100vh-5rem)] flex flex-col overflow-hidden">
+      {/* 3D Background */}
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-50 dark:opacity-30">
+        <Suspense fallback={null}>
+          <Canvas camera={{ position: [0, 0, 5], fov: 60 }}>
+            <ParticleBackdrop isThinking={isLoading} />
+          </Canvas>
+        </Suspense>
+      </div>
+
       {/* Chat header */}
-      <div className="flex items-center gap-4 px-6 py-4 border-b border-slate-800 bg-slate-900/60 backdrop-blur-sm shrink-0">
+      <div className="relative z-10 flex items-center gap-4 px-6 py-4 border-b border-[var(--border)] bg-[var(--card)]/80 backdrop-blur-md shrink-0">
         <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-brand-500 to-emerald-400 flex items-center justify-center shadow-lg">
-          <Sparkles className="h-5 w-5 text-white" />
+          <Sparkles className="h-5 w-5 text-[var(--foreground)]" />
         </div>
         <div>
-          <h2 className="font-semibold text-white">EcoCoach</h2>
-          <p className="text-xs text-slate-400">Powered by Gemini AI · Always learning from your habits</p>
+          <h2 className="font-semibold text-[var(--foreground)]">EcoCoach</h2>
+          <p className="text-xs text-[var(--muted-foreground)]">Powered by Gemini AI · Always learning from your habits</p>
         </div>
         <div className="ml-auto flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full bg-brand-400 animate-pulse" />
-          <span className="text-xs text-slate-400">Online</span>
+          <span className="text-xs text-[var(--muted-foreground)]">Online</span>
         </div>
       </div>
 
@@ -123,14 +134,14 @@ export default function GreenCoach() {
               <div
                 className={`flex-shrink-0 h-9 w-9 rounded-full flex items-center justify-center ${
                   msg.role === 'user'
-                    ? 'bg-brand-500/20'
+                    ? 'bg-[var(--primary)]/20'
                     : 'bg-gradient-to-tr from-brand-500 to-emerald-400'
                 }`}
               >
                 {msg.role === 'user' ? (
-                  <User className="h-4 w-4 text-brand-400" />
+                  <User className="h-4 w-4 text-[var(--primary)]" />
                 ) : (
-                  <Bot className="h-4 w-4 text-white" />
+                  <Bot className="h-4 w-4 text-[var(--foreground)]" />
                 )}
               </div>
 
@@ -138,8 +149,8 @@ export default function GreenCoach() {
               <div
                 className={`max-w-[75%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
                   msg.role === 'user'
-                    ? 'bg-brand-500 text-white rounded-tr-none'
-                    : 'bg-slate-800 text-slate-200 rounded-tl-none border border-slate-700'
+                    ? 'bg-[var(--primary)] text-[var(--primary-foreground)] rounded-tr-none'
+                    : 'glass-panel text-[var(--foreground)] rounded-tl-none border-l-4 border-l-[var(--primary)]'
                 }`}
               >
                 {msg.role === 'user' ? (
@@ -162,9 +173,9 @@ export default function GreenCoach() {
               className="flex gap-3"
             >
               <div className="flex-shrink-0 h-9 w-9 rounded-full bg-gradient-to-tr from-brand-500 to-emerald-400 flex items-center justify-center">
-                <Bot className="h-4 w-4 text-white" />
+                <Bot className="h-4 w-4 text-[var(--foreground)]" />
               </div>
-              <div className="bg-slate-800 border border-slate-700 rounded-2xl rounded-tl-none px-5 py-4 flex items-center gap-1.5">
+              <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl rounded-tl-none px-5 py-4 flex items-center gap-1.5">
                 <span className="w-2 h-2 bg-slate-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                 <span className="w-2 h-2 bg-slate-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
                 <span className="w-2 h-2 bg-slate-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
@@ -176,7 +187,7 @@ export default function GreenCoach() {
       </div>
 
       {/* Input Area */}
-      <div className="shrink-0 border-t border-slate-800 bg-slate-900/80 backdrop-blur-sm px-4 sm:px-8 pb-6 pt-4">
+      <div className="shrink-0 border-t border-[var(--border)] bg-[var(--card)]/80 backdrop-blur-sm px-4 sm:px-8 pb-6 pt-4">
         {/* Quick suggestions (show when few messages) */}
         {suggestions.length > 0 && messages.length <= 2 && (
           <div className="flex gap-2 overflow-x-auto pb-3 scrollbar-hide">
@@ -185,7 +196,7 @@ export default function GreenCoach() {
                 key={i}
                 onClick={() => handleSend(s.message)}
                 disabled={isLoading}
-                className="whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-300 bg-slate-800 border border-slate-700 hover:border-brand-500/60 hover:text-brand-400 rounded-full transition-colors"
+                className="whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[var(--foreground)] bg-[var(--card)] border border-[var(--border)] hover:border-[var(--primary)]/60 hover:text-[var(--primary)] rounded-full transition-colors"
               >
                 {s.label}
                 <ArrowRight className="h-3 w-3" />
@@ -204,12 +215,12 @@ export default function GreenCoach() {
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask for eco-tips, weekly challenges, or progress review…"
             disabled={isLoading}
-            className="flex-1 bg-slate-800 border border-slate-700 focus:border-brand-500 text-white placeholder-slate-500 rounded-full px-5 py-3.5 pr-14 text-sm focus:outline-none transition-colors"
+            className="flex-1 bg-[var(--card)] border border-[var(--border)] focus:border-[var(--primary)] text-[var(--foreground)] placeholder-slate-500 rounded-full px-5 py-3.5 pr-14 text-sm focus:outline-none transition-colors"
           />
           <button
             type="submit"
             disabled={!input.trim() || isLoading}
-            className="absolute right-2 w-10 h-10 flex items-center justify-center bg-brand-500 hover:bg-brand-600 disabled:opacity-40 disabled:hover:bg-brand-500 text-white rounded-full transition-colors"
+            className="absolute right-2 w-10 h-10 flex items-center justify-center bg-[var(--primary)] hover:bg-brand-600 disabled:opacity-40 disabled:hover:bg-[var(--primary)] text-[var(--foreground)] rounded-full transition-colors"
           >
             {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4 ml-0.5" />}
           </button>

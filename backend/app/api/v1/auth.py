@@ -16,6 +16,7 @@ from app.schemas.auth import (
     TokenPair,
     UserCreate,
     UserLogin,
+    GoogleLoginRequest,
 )
 from app.schemas.user import UserResponse
 from app.services import auth as auth_service
@@ -41,6 +42,18 @@ async def login(
     """OAuth2 compatible token login, getting an access token for future requests."""
     user, tokens = await auth_service.authenticate_user(
         db, login_data.email, login_data.password
+    )
+    return tokens
+
+
+@router.post("/google", response_model=TokenPair)
+async def google_login(
+    login_data: GoogleLoginRequest,
+    db: AsyncSession = Depends(get_db),
+) -> Any:
+    """OAuth2 Google token login mockup."""
+    user, tokens = await auth_service.authenticate_google_user(
+        db, login_data.token
     )
     return tokens
 

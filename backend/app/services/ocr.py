@@ -14,6 +14,8 @@ import sys
 import time
 from pathlib import Path
 from typing import Optional
+import google.genai as genai
+import PIL.Image
 
 from app.core.config import settings
 
@@ -55,9 +57,6 @@ def _call_gemini_vision_sync(image_path: str) -> dict:
     gemini_key = getattr(settings, 'GEMINI_API_KEY', None)
     if not gemini_key:
         raise ValueError("GEMINI_API_KEY is not set in environment variables.")
-
-    import google.genai as genai
-    import PIL.Image
 
     print(f"[OCR] Stage 1: Calling Gemini Vision on {image_path}")
     t0 = time.time()

@@ -38,8 +38,8 @@ export default function AdminReports() {
       title: 'Activities Report',
       description: 'All logged activities across all users with carbon impact data.',
       icon: Activity,
-      color: 'bg-brand-500/10 text-brand-400 border-brand-500/20',
-      iconColor: 'text-brand-400',
+      color: 'bg-[var(--primary)]/10 text-[var(--primary)] border-[var(--primary)]/20',
+      iconColor: 'text-[var(--primary)]',
       stats: stats ? `${stats.total_activities.toLocaleString()} activities` : '…',
       filename: 'ecosense_activities.csv',
       url: adminApi.exportActivitiesCSV(),
@@ -60,8 +60,8 @@ export default function AdminReports() {
   return (
     <div className="space-y-5 max-w-4xl mx-auto">
       <div>
-        <h1 className="text-2xl font-bold text-white">Reports</h1>
-        <p className="text-slate-500 text-sm mt-1">Export platform data as CSV files</p>
+        <h1 className="text-2xl font-bold text-[var(--foreground)]">Reports</h1>
+        <p className="text-[var(--foreground)]0 text-sm mt-1">Export platform data as CSV files</p>
       </div>
 
       {/* Summary */}
@@ -73,8 +73,8 @@ export default function AdminReports() {
             { label: 'Format', value: 'CSV (UTF-8)' },
           ].map(({ label, value }) => (
             <div key={label} className="bg-[#0d1117]/80 border border-white/5 rounded-xl p-4 text-center">
-              <p className="text-lg font-bold text-white">{value}</p>
-              <p className="text-xs text-slate-500 mt-0.5">{label}</p>
+              <p className="text-lg font-bold text-[var(--foreground)]">{value}</p>
+              <p className="text-xs text-[var(--foreground)]0 mt-0.5">{label}</p>
             </div>
           ))}
         </div>
@@ -94,13 +94,13 @@ export default function AdminReports() {
               <Icon className="w-6 h-6" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-white">{title}</p>
-              <p className="text-xs text-slate-500 mt-0.5">{description}</p>
+              <p className="font-semibold text-[var(--foreground)]">{title}</p>
+              <p className="text-xs text-[var(--foreground)]0 mt-0.5">{description}</p>
               <p className={`text-xs font-medium mt-1.5 ${iconColor}`}>{s}</p>
             </div>
             <button
               onClick={() => downloadCSV(url, filename)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 text-slate-300 hover:text-white text-sm font-medium transition-all shrink-0"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 text-[var(--foreground)] hover:text-[var(--foreground)] text-sm font-medium transition-all shrink-0"
             >
               <Download className="w-4 h-4" />
               Export CSV
@@ -110,9 +110,9 @@ export default function AdminReports() {
       </div>
 
       {/* Info */}
-      <div className="flex items-start gap-3 p-4 rounded-xl bg-brand-500/5 border border-brand-500/15">
-        <CheckCircle className="w-4 h-4 text-brand-400 mt-0.5 shrink-0" />
-        <p className="text-xs text-slate-400 leading-relaxed">
+      <div className="flex items-start gap-3 p-4 rounded-xl bg-[var(--primary)]/5 border border-[var(--primary)]/15">
+        <CheckCircle className="w-4 h-4 text-[var(--primary)] mt-0.5 shrink-0" />
+        <p className="text-xs text-[var(--muted-foreground)] leading-relaxed">
           Reports are generated in real-time from the database. CSV files are UTF-8 encoded and compatible with Excel, Google Sheets, and all major BI tools.
         </p>
       </div>

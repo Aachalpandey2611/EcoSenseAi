@@ -5,6 +5,7 @@ interface SettingsState {
   theme: 'dark' | 'light' | 'system';
   language: string;
   setTheme: (theme: 'dark' | 'light' | 'system') => void;
+  toggleTheme: () => void;
   setLanguage: (lang: string) => void;
 }
 
@@ -15,12 +16,21 @@ export const useSettingsStore = create<SettingsState>()(
       language: 'en',
       setTheme: (theme) => {
         set({ theme });
-        if (theme === 'light') {
-          document.documentElement.classList.add('light-theme');
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
         } else {
-          document.documentElement.classList.remove('light-theme');
+          document.documentElement.classList.remove('dark');
         }
       },
+      toggleTheme: () => set((state) => {
+        const newTheme = state.theme === 'light' ? 'dark' : 'light';
+        if (newTheme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+        return { theme: newTheme };
+      }),
       setLanguage: (language) => set({ language }),
     }),
     {

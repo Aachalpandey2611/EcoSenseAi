@@ -43,12 +43,12 @@ const ForgotPassword = () => {
         transition={{ duration: 0.5 }}
       >
         <GlassPanel className="text-center p-10">
-          <div className="w-16 h-16 bg-brand-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle2 className="w-8 h-8 text-brand-400" />
+          <div className="w-16 h-16 bg-[var(--primary)]/20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle2 className="w-8 h-8 text-[var(--primary)]" />
           </div>
-          <h2 className="text-2xl font-bold text-white mb-2">Check your email</h2>
-          <p className="text-slate-400 mb-8">
-            We've sent a password reset link to <span className="text-white">{email}</span>.
+          <h2 className="text-2xl font-bold text-[var(--foreground)] mb-2">Check your email</h2>
+          <p className="text-[var(--muted-foreground)] mb-8">
+            We've sent a password reset link to <span className="text-[var(--foreground)]">{email}</span>.
           </p>
           <Button 
             variant="secondary" 
@@ -58,7 +58,7 @@ const ForgotPassword = () => {
             Didn't receive the email? Try again
           </Button>
           <div className="mt-6">
-            <Link to="/auth/login" className="text-sm font-medium text-brand-400 hover:text-brand-300 flex items-center justify-center gap-2">
+            <Link to="/auth/login" className="text-sm font-medium text-[var(--primary)] hover:text-brand-300 flex items-center justify-center gap-2">
               <ArrowLeft className="w-4 h-4" /> Back to login
             </Link>
           </div>
@@ -75,11 +75,11 @@ const ForgotPassword = () => {
     >
       <GlassPanel>
         <div className="mb-8">
-          <Link to="/auth/login" className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-800/50 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors mb-6">
+          <Link to="/auth/login" className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[var(--card)]/50 text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--border)] transition-colors mb-6">
             <ArrowLeft className="w-4 h-4" />
           </Link>
-          <h2 className="text-3xl font-bold text-white mb-2">Reset password</h2>
-          <p className="text-slate-400">Enter your email and we'll send you a link to reset your password.</p>
+          <h2 className="text-3xl font-bold text-[var(--foreground)] mb-2">Reset password</h2>
+          <p className="text-[var(--muted-foreground)]">Enter your email and we'll send you a link to reset your password.</p>
         </div>
 
         {error && (

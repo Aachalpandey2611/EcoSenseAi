@@ -41,7 +41,7 @@ export default function CommunityMap({ events, onJoinEvent, joiningId }: Communi
   const center: [number, number] = [19.1485, 72.8810];
 
   return (
-    <div className="relative w-full h-[600px] rounded-2xl overflow-hidden border border-slate-700 shadow-2xl">
+    <div className="relative w-full h-[600px] rounded-2xl overflow-hidden border border-[var(--border)] shadow-2xl">
       <MapContainer 
         center={center} 
         zoom={11} 
@@ -86,8 +86,8 @@ export default function CommunityMap({ events, onJoinEvent, joiningId }: Communi
       
       {/* Search or filter could go here */}
       <div className="absolute top-6 right-6 z-[1000]">
-        <div className="bg-slate-900/80 backdrop-blur-md border border-slate-700 rounded-xl p-3 shadow-lg flex flex-col gap-2">
-           <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Impact Network</h4>
+        <div className="bg-[var(--card)]/80 backdrop-blur-md border border-[var(--border)] rounded-xl p-3 shadow-lg flex flex-col gap-2">
+           <h4 className="text-xs font-bold text-[var(--muted-foreground)] uppercase tracking-wider mb-1">Impact Network</h4>
            <div className="flex items-center gap-2">
              <div className="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
              <span className="text-sm font-medium text-gray-200">Local Events</span>

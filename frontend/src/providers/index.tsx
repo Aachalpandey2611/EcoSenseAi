@@ -37,8 +37,8 @@ export const AppProviders = ({ children }: { children: React.ReactNode }) => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-900">
-        <Loader2 className="w-10 h-10 animate-spin text-brand-500" />
+      <div className="min-h-screen flex items-center justify-center bg-[var(--card)]">
+        <Loader2 className="w-10 h-10 animate-spin text-[var(--primary)]" />
       </div>
     );
   }

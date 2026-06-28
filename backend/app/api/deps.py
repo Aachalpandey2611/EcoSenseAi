@@ -71,6 +71,18 @@ async def require_admin(
     return current_user
 
 
+async def require_pro_tier(
+    current_user: User = Depends(get_current_active_user),
+) -> User:
+    """Require pro or enterprise subscription tier."""
+    if current_user.subscription_tier == "free" and current_user.role not in ("admin", "super_admin"):
+        raise HTTPException(
+            status_code=status.HTTP_402_PAYMENT_REQUIRED,
+            detail="This feature requires a Pro or Enterprise subscription. Please upgrade to continue.",
+        )
+    return current_user
+
+
 async def require_super_admin(
     current_user: User = Depends(get_current_active_user),
 ) -> User:
